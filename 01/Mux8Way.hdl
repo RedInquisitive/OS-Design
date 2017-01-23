@@ -1,0 +1,37 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/Mux4Way16.hdl
+
+/**
+ * 4-way 16-bit multiplexor:
+ * out = a if sel == 00
+ *       b if sel == 01
+ *       c if sel == 10
+ *       d if sel == 11
+ */
+
+CHIP Mux8Way {
+    IN a, b, c, d, e, f, g, h, sel[3];
+    OUT out;
+	
+    PARTS:
+    Not(in=sel[0], out=notsel0);
+	Not(in=sel[1], out=notsel1);
+	Not(in=sel[2], out=notsel2);
+	And4Way(a=a, b=notsel2, c=notsel1, d=notsel0, out=muxa);
+	And4Way(a=b, b=notsel2, c=notsel1, d=sel[0], out=muxb);
+	And4Way(a=c, b=notsel2, c=sel[1], d=notsel0, out=muxc);
+	And4Way(a=d, b=notsel2, c=sel[1], d=sel[0], out=muxd);
+	And4Way(a=e, b=sel[2], c=notsel1, d=notsel0, out=muxe);
+	And4Way(a=f, b=sel[2], c=notsel1, d=sel[0], out=muxf);
+	And4Way(a=g, b=sel[2], c=sel[1], d=notsel0, out=muxg);
+	And4Way(a=h, b=sel[2], c=sel[1], d=sel[0], out=muxh);
+	Or(a=muxa, b=muxb, out=muxab);
+	Or(a=muxc, b=muxd, out=muxcd);
+	Or(a=muxe, b=muxf, out=muxef);
+	Or(a=muxg, b=muxh, out=muxgh);
+	Or(a=muxab, b=muxcd, out=muxabcd);
+	Or(a=muxef, b=muxgh, out=muxefgh);
+	Or(a=muxabcd, b=muxefgh, out=out);
+}

@@ -1,0 +1,23 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/And.hdl
+
+/**
+ * creates an 8 way bus
+ */
+
+CHIP Bus8 {
+	IN a, b, c, d, e, f, g, h;
+    OUT out[8];
+	
+	PARTS:
+	a=out[0];
+	b=out[1];
+	c=out[2];
+	d=out[3];
+	e=out[4];
+	f=out[5];
+	g=out[6];
+	h=out[7];
+}
