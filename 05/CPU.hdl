@@ -39,5 +39,62 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+	Not(in=instruction[15], out=Amode);
+	Not(in=Amode, out=Cmode); //Rename to Cmode from instruction[15]
+	
+	//Will C mode write to the A register?
+	And(a=Cmode, b=instruction[5], out=ALUtoA);
+	Mux16(a=instruction, b=ALUout, sel=ALUtoA, out=Ain);
+	
+	//if in A mode or if C mode's destination is A, put a load on the A register.
+	//Also, write to the memory bus.
+	Or(a=Amode, b=ALUtoA, out=Aload);
+	ARegister(in=Ain, load=Aload, out=Aout, out[0..14]=addressM);
+	
+	//Get A or M depending on bit 12
+	Mux16(a=Aout, b=inM, sel=instruction[12], out=AMout);
+
+	//Get D register
+	And(a=Cmode, b=instruction[4], out=Dload);
+	DRegister(in=ALUout, load=Dload, out=Dout);
+	
+	//Run the instruction on the ALU.
+	ALU(x=Dout, y=AMout, 
+		zx=instruction[11], 
+		nx=instruction[10], 
+		zy=instruction[9], 
+		ny=instruction[8], 
+		f=instruction[7],
+		no=instruction[6], 
+		
+		out=ALUout, 
+		out=outM,
+		zr=zero,
+		ng=negative);
+	
+	//Calculate positivie
+	Or(a=zero, b=negative, out=lessOrEqual);
+	Not(in=lessOrEqual, out=positive);
+	
+	//Do we need to ACTUALLY write to the memory?
+	And(a=Cmode, b=instruction[3], out=writeM);
+	
+	//Calculate the jump modifications to the program counter.
+	//jump if greater than zero?
+	And(a=instruction[0], b=positive,	out=jgt);
+	
+	//jump if zero?
+	And(a=instruction[1], b=zero, 		out=jeq);    
+	
+	//jump if less than zero?
+	And(a=instruction[2], b=negative, 	out=jlt);   
+	
+	//About to jump?
+	Or(a=jeq, b=jlt, out=jle);
+	Or(a=jle, b=jgt, out=jmp);
+	And(a=Cmode, b=jmp, out=PCload);
+	
+	//Increase the program counter?
+	Not(in=PCload, out=PCinc);
+	PC(in=Aout, inc=PCinc, load=PCload, reset=reset, out[0..14]=pc);
 }
