@@ -71,9 +71,8 @@ public class Command {
 		"A=M\n" +
 		"0;JMP\n";
 		
-	
-	public final String name;
-	protected String asm;
+	protected final String name;
+	protected final String asm;
 	protected String[] commands;
 	protected int line = 0;
 	
@@ -86,7 +85,7 @@ public class Command {
 		this.commands = commands;
 	}
 
-	public String getAsm() {
+	public String getAsm() throws ParseException {
 		return asm;
 	}
 
@@ -96,5 +95,19 @@ public class Command {
 
 	public String toString() {
 		return name;
+	}
+	
+	protected void stringWithNumber(String[] commands) throws ParseException  {
+		if(commands.length != 2) {
+			throw new ParseException("You need 2 arguments for a " + name + " command!", line);
+		}
+		
+		try { 
+			Integer.parseInt(commands[1]);
+		} catch (NumberFormatException e) {
+			throw new ParseException("The second parameter of a " + name + " command needs to be a number!", line);
+		}
+		
+		parameters(commands);
 	}
 }

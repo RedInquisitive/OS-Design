@@ -2,6 +2,9 @@ package translator;
 
 import java.text.ParseException;
 
+import main.Replace;
+import main.Translator;
+
 public class Push extends Command {
 	
 	/**
@@ -20,7 +23,7 @@ public class Push extends Command {
 	public static final String LOCAL = 
 		"@LCL\n" +
 		"D=M\n" +
-		"@IDX\n" +
+		"@" + Replace.IDX + "\n" +
 		"A=D+A\n" +
 		"D=M\n" +
 		PUSH;
@@ -31,7 +34,7 @@ public class Push extends Command {
 	public static final String ARGUMENT = 
 		"@ARG\n" +
 		"D=M\n" +
-		"@IDX\n" +
+		"@" + Replace.IDX + "\n" +
 		"A=D+A\n" +
 		"D=M\n" +
 		PUSH;
@@ -42,7 +45,7 @@ public class Push extends Command {
 	public static final String THIS = 
 		"@THIS\n" +
 		"D=M\n" +
-		"@IDX\n" +
+		"@" + Replace.IDX + "\n" +
 		"A=D+A\n" +
 		"D=M\n" +
 		PUSH;
@@ -53,7 +56,7 @@ public class Push extends Command {
 	public static final String THAT = 
 		"@THAT\n" +
 		"D=M\n" +
-		"@IDX\n" +
+		"@" + Replace.IDX + "\n" +
 		"A=D+A\n" +
 		"D=M\n" +
 		PUSH;
@@ -80,7 +83,7 @@ public class Push extends Command {
 	 * A constant pushed to the stack
 	 */
 	public static final String CONSTANT = 
-		"@IDX\n" +
+		"@" + Replace.IDX + "\n" +
 		"D=A\n" +
 		PUSH;
 	
@@ -88,7 +91,7 @@ public class Push extends Command {
 	 * A static variable across files pushed onto the stack
 	 */
 	public static final String STATIC = 
-		"@FILENAME.IDX\n" +
+		"@" + Replace.FILENAME + "." + Replace.IDX + "\n" +
 		"D=M\n" +
 		PUSH;
 	
@@ -98,7 +101,7 @@ public class Push extends Command {
 	public static final String TEMP = 
 		"@R5\n" +
 		"D=A\n" +
-		"@IDX\n" +
+		"@" + Replace.IDX + "\n" +
 		"A=D+A\n" +
 		"D=M\n" +
 		PUSH;
@@ -108,44 +111,27 @@ public class Push extends Command {
 	}
 	
 	public void parameters(String[] commands) throws ParseException {
-		if(commands.length != 2) {
-			throw new ParseException("You need 2 arguments for a push command!", line);
-		}
-		
-		try {
-			Integer.parseInt(commands[1]);
-		} catch (NumberFormatException e) {
-			throw new ParseException("The second parameter of a push command needs to be a number!", line);
-		}
-		
+		super.stringWithNumber(commands);
+	}
+	
+	public String getAsm() throws ParseException {
 		switch (commands[0].toLowerCase()) {
 		case "local":
-			asm = LOCAL.replaceAll("IDX", commands[1]);
-			break;
+			return LOCAL.replaceAll(Replace.IDX, commands[1]);
 		case "argument":
-			asm = ARGUMENT.replaceAll("IDX", commands[1]);
-			break;
+			return ARGUMENT.replaceAll(Replace.IDX, commands[1]);
 		case "this":
-			asm = THIS.replaceAll("IDX", commands[1]);
-			break;
+			return THIS.replaceAll(Replace.IDX, commands[1]);
 		case "that":
-			asm = THAT.replaceAll("IDX", commands[1]);
-			break;
+			return THAT.replaceAll(Replace.IDX, commands[1]);
 		case "pointer":
-			if (commands[1].equals("0"))
-				asm = POINTER_THIS;
-			else
-				asm = POINTER_THAT;
-			break;
+			return (commands[1].equals("0") ? POINTER_THIS : POINTER_THAT);
 		case "constant":
-			asm = CONSTANT.replaceAll("IDX", commands[1]);
-			break;
+			return CONSTANT.replaceAll(Replace.IDX, commands[1]);
 		case "static":
-			asm = STATIC.replaceAll("IDX", commands[1]).replaceAll("FILENAME", Translator.getFileName());
-			break;
+			return STATIC.replaceAll(Replace.IDX, commands[1]).replaceAll(Replace.FILENAME, Translator.getFileName());
 		case "temp":
-			asm = TEMP.replace("IDX", commands[1]);
-			break;
+			return TEMP.replace(Replace.IDX, commands[1]);
 		default: 
 			throw new ParseException(commands[1] + " is not a valid push command!", line);
 		}

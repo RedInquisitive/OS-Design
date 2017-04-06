@@ -1,5 +1,7 @@
 package translator;
 
+import main.Replace;
+
 public class Compare extends Command {
 	
 	/**
@@ -10,7 +12,7 @@ public class Compare extends Command {
 	public static final String COMPARE_PRE = 
 		Command.BINARY +
 		"D=M-D\n" +
-		"@COMP.true.UNIQUE\n";
+		"@" + Replace.COMPARE + ".true." + Replace.UNIQUE + "\n";
 
 	/**
 	 * Suffix to a comparison operator. Check "see also" for notes.
@@ -20,21 +22,21 @@ public class Compare extends Command {
 		"@SP\n" +
 		"A=M-1\n" +
 		"M=0\n" +
-		"@COMP.after.UNIQUE\n" +
+		"@" + Replace.COMPARE + ".after." + Replace.UNIQUE + "\n" +
 		"0;JMP\n" +
-		"(COMP.true.UNIQUE)\n" +
+		"(" + Replace.COMPARE + ".true." + Replace.UNIQUE + ")\n" +
 		"@SP\n" +
 		"A=M-1\n" +
 		"M=-1\n" +
-		"(COMP.after.UNIQUE)\n";
+		"(" + Replace.COMPARE + ".after." + Replace.UNIQUE + ")\n";
 	
 	private int unique = 0;
 	
 	public Compare(String name, String asm) {
-		super(name, (COMPARE_PRE + asm + COMPARE_POST).replaceAll("COMP", name));
+		super(name, (COMPARE_PRE + asm + COMPARE_POST).replaceAll(Replace.COMPARE, name));
 	}
 	
 	public String getAsm() {
-		return asm.replaceAll("UNIQUE", "" + unique++);
+		return asm.replaceAll(Replace.UNIQUE, "" + unique++);
 	}
 }
