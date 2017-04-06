@@ -1,19 +1,21 @@
 package translator;
 
+import java.text.ParseException;
+
 public class Command {
 	
 	/**
 	 * Prefix to unary commands
 	 */
-	public static final String SINGLE = 		
+	public static final String UNARY = 		
 		"@SP\n" +
 		"AM=M-1\n";
 	
 	/**
 	 * Prefix to math commands
 	 */
-	public static final String DOUBLE = 
-		SINGLE +	
+	public static final String BINARY = 
+		UNARY +	
 		"D=M\n" +
 		"A=A-1\n";
 	
@@ -71,23 +73,28 @@ public class Command {
 		
 	
 	public final String name;
-	public final String asm;
-	protected String[] arguements;
+	protected String asm;
+	protected String[] commands;
+	protected int line = 0;
 	
 	public Command(String name, String asm) {
 		this.name = name;
 		this.asm = asm;
 	}
 	
-	public String toString() {
-		return name;
+	public void parameters(String[] commands) throws ParseException {
+		this.commands = commands;
 	}
-	
-	public String getASM() {
+
+	public String getAsm() {
 		return asm;
 	}
-	
-	public void argue(String[] arguements) {
-		this.arguements = arguements;
+
+	public void setLine(int line) {
+		this.line = line;
+	}
+
+	public String toString() {
+		return name;
 	}
 }

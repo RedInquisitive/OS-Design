@@ -8,7 +8,7 @@ public class Compare extends Command {
 	 * Note: COMP must be replaced with the name of the comparison.
 	 */
 	public static final String COMPARE_PRE = 
-		Command.DOUBLE +
+		Command.BINARY +
 		"D=M-D\n" +
 		"@COMP.true.UNIQUE\n";
 
@@ -34,7 +34,7 @@ public class Compare extends Command {
 		super(name, (COMPARE_PRE + asm + COMPARE_POST).replaceAll("COMP", name));
 	}
 	
-	public String getASM() {
+	public String getAsm() {
 		return asm.replaceAll("UNIQUE", "" + unique++);
 	}
 }
