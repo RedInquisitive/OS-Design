@@ -33,10 +33,10 @@ public class Compare extends Command {
 	private int unique = 0;
 	
 	public Compare(String name, String asm) {
-		super(name, (COMPARE_PRE + asm + COMPARE_POST).replaceAll(Replace.COMPARE, name));
+		super(name, (COMPARE_PRE + asm + COMPARE_POST).replace(Replace.COMPARE, name));
 	}
 	
 	public String getAsm() {
-		return asm.replaceAll(Replace.UNIQUE, "" + unique++);
+		return asm.replace(Replace.UNIQUE, "" + unique++);
 	}
 }

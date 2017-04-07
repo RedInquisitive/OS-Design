@@ -118,19 +118,19 @@ public class Push extends Command {
 	public String getAsm() throws ParseException {
 		switch (commands[1].toLowerCase()) {
 		case "local":
-			return LOCAL.replaceAll(Replace.IDX, commands[2]);
+			return LOCAL.replace(Replace.IDX, commands[2]);
 		case "argument":
-			return ARGUMENT.replaceAll(Replace.IDX, commands[2]);
+			return ARGUMENT.replace(Replace.IDX, commands[2]);
 		case "this":
-			return THIS.replaceAll(Replace.IDX, commands[2]);
+			return THIS.replace(Replace.IDX, commands[2]);
 		case "that":
-			return THAT.replaceAll(Replace.IDX, commands[2]);
+			return THAT.replace(Replace.IDX, commands[2]);
 		case "pointer":
 			return (commands[2].equals("0") ? POINTER_THIS : POINTER_THAT);
 		case "constant":
-			return CONSTANT.replaceAll(Replace.IDX, commands[2]);
+			return CONSTANT.replace(Replace.IDX, commands[2]);
 		case "static":
-			return STATIC.replaceAll(Replace.IDX, commands[2]).replaceAll(Replace.FILENAME, Translator.getFileName());
+			return STATIC.replace(Replace.IDX, commands[2]).replace(Replace.FILENAME, Translator.getFileName());
 		case "temp":
 			return TEMP.replace(Replace.IDX, commands[2]);
 		default: 

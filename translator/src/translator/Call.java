@@ -89,8 +89,8 @@ public class Call extends Command {
 	
 	public String getAsm() {
 		return CALL
-			.replaceAll(Replace.UNIQUE, "" + unique++)
-			.replaceAll(Replace.IDX, commands[2])
-			.replaceAll(Replace.FUNCTION, commands[1]);
+			.replace(Replace.UNIQUE, "" + unique++)
+			.replace(Replace.IDX, commands[2])
+			.replace(Replace.FUNCTION, commands[1]);
 	}
 }

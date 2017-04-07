@@ -46,4 +46,9 @@ public class Replace {
 	 * This will be replaced by a filename.
 	 */
 	public static final String FILENAME = "REGEXFILENAME";
+	
+	/**
+	 * This will replace the init code with a default call to Sys.init.
+	 */
+	public static final String INIT = "REGEXSYSTEMCALL";
 }

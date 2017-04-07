@@ -16,6 +16,6 @@ public class Goto extends Command {
 	}
 	
 	public String getAsm() {
-		return asm.replaceAll(Replace.FUNKYLABEL, Translator.getFunctionName() + "$" + commands[1]);
+		return asm.replace(Replace.FUNKYLABEL, Translator.getFunctionName() + "$" + commands[1]);
 	}
 }

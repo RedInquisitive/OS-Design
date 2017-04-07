@@ -9,15 +9,23 @@ public class Command {
 	 */
 	public static final String UNARY = 		
 		"@SP\n" +
-		"AM=M-1\n";
+		"A=M-1\n";
 	
 	/**
 	 * Prefix to math commands
 	 */
 	public static final String BINARY = 
-		UNARY +	
+		"@SP\n" +
+		"AM=M-1\n" +
 		"D=M\n" +
 		"A=A-1\n";
+	
+	/**
+	 * Conditional statements (if goto)
+	 */
+	public static final String COND = 
+		"@SP\n" +
+		"AM=M-1\n";
 	
 	/**
 	 * Returns to a previous call
