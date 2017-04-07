@@ -41,7 +41,7 @@ public class Translator {
 			files.add(new File(path));
 		}
 		
-		File system = searchFile(files, "Sys.vm", "It is impossible to deturmine the jump bootstrap!");
+		File system = searchFile(files, "Sys.vm", "It is impossible to determine the jump bootstrap!");
 		if(system != null) {
 			mode = Mode.BOOTSTRAP;
 		} else if(files.size() > 0) {
