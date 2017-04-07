@@ -9,12 +9,12 @@ public class Label extends Command {
 		super(name, "");
 	}
 	
-	public void parameters(String[] commands) throws ParseException {
-		if(commands.length != 1) throw new ParseException("A label command must have a label name!", line);
-		super.parameters(commands);
+	public void setParameters(String[] commands) throws ParseException {
+		if(commands.length != 2) throw new ParseException("A label command must have a label name!", line);
+		super.setParameters(commands);
 	}
 	
 	public String getAsm() {
-		return "(" + Translator.getFunctionName() + "$" + commands[0] + ")\n";
+		return "(" + Translator.getFunctionName() + "$" + commands[1] + ")\n";
 	}
 }

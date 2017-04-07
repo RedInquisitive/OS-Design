@@ -98,28 +98,29 @@ public class Pop extends Command {
 		super(name, "");
 	}
 	
-	public void parameters(String[] commands) throws ParseException {
+	public void setParameters(String[] commands) throws ParseException {
 		super.stringWithNumber(commands);
+		super.setParameters(commands);
 	}
 	
 	public String getAsm() throws ParseException {
-		switch (commands[0].toLowerCase()) {
+		switch (commands[1].toLowerCase()) {
 		case "local":
-			return LOCAL.replaceAll(Replace.IDX, commands[1]);
+			return LOCAL.replaceAll(Replace.IDX, commands[2]);
 		case "argument":
-			return ARGUMENT.replaceAll(Replace.IDX, commands[1]);
+			return ARGUMENT.replaceAll(Replace.IDX, commands[2]);
 		case "this":
-			return THIS.replaceAll(Replace.IDX, commands[1]);
+			return THIS.replaceAll(Replace.IDX, commands[2]);
 		case "that":
-			return THAT.replaceAll(Replace.IDX, commands[1]);
+			return THAT.replaceAll(Replace.IDX, commands[2]);
 		case "pointer":
-			return (commands[1].equals("0") ? POINTER_THIS : POINTER_THAT);
+			return (commands[2].equals("0") ? POINTER_THIS : POINTER_THAT);
 		case "static":
-			return STATIC.replaceAll(Replace.IDX, commands[1]).replaceAll(Replace.FILENAME, Translator.getFileName());
+			return STATIC.replaceAll(Replace.IDX, commands[2]).replaceAll(Replace.FILENAME, Translator.getFileName());
 		case "temp":
-			return TEMP.replace(Replace.IDX, commands[1]);
+			return TEMP.replace(Replace.IDX, commands[2]);
 		default: 
-			throw new ParseException(commands[1] + " is not a valid pop command!", line);
+			throw new ParseException(commands[2] + " is not a valid pop command!", line);
 		}
 	}
 }

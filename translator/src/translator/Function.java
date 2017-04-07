@@ -1,24 +1,33 @@
 package translator;
 
+import java.text.ParseException;
+
+import main.Translator;
+
 public class Function extends Command {
 	public Function(String name) {
 		super(name, "");
 	}
 	
-	  private String FUNCTION(String f, String k) {
-		    String s =
-		      "(" + f + ")\n" +
-		      "@SP\n" +
-		      "A=M\n";
-		    int kk = Integer.parseInt(k);
-		    for (int i = 0; i < kk; i += 1) {
-		      s +=
-		        "M=0\n" +
-		        "A=A+1\n";
-		    }
-		    return s +
-		      "D=A\n" +
-		      "@SP\n" +
-		      "M=D\n";
+	public void setParameters(String[] commands) throws ParseException {
+		super.stringWithNumber(commands);
+		super.setParameters(commands);
+		Translator.setFunctionName(commands[1]);
+	}
+	
+	public String getAsm() {
+		StringBuilder s = new StringBuilder();
+		s.append("("); s.append(commands[1]); s.append(")\n");
+		s.append("@SP\n");
+		s.append("A=M\n");
+		int functions = Integer.parseInt(commands[2]);
+		for (int i = 0; i < functions; i++) {
+			s.append("M=0\n");
+			s.append("A=A+1\n");
+		}
+		s.append("D=A\n");
+		s.append("@SP\n");
+		s.append("M=D\n");
+		return s.toString();
 		}
 }

@@ -10,12 +10,12 @@ public class Goto extends Command {
 		super(name, asm);
 	}
 	
-	public void parameters(String[] commands) throws ParseException {
-		if(commands.length != 1) throw new ParseException("A goto command must have a label name to go to!", line);
-		super.parameters(commands);
+	public void setParameters(String[] commands) throws ParseException {
+		if(commands.length != 2) throw new ParseException("A goto command must have a label name to go to!", line);
+		super.setParameters(commands);
 	}
 	
 	public String getAsm() {
-		return asm.replaceAll(Replace.FUNKYLABEL, Translator.getFunctionName() + "$" + commands[0]);
+		return asm.replaceAll(Replace.FUNKYLABEL, Translator.getFunctionName() + "$" + commands[1]);
 	}
 }

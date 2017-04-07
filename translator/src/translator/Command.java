@@ -81,33 +81,31 @@ public class Command {
 		this.asm = asm;
 	}
 	
-	public void parameters(String[] commands) throws ParseException {
+	public final void setLine(int line) {
+		this.line = line;
+	}
+
+	public final String toString() {
+		return name;
+	}
+
+	protected final void stringWithNumber(String[] commands) throws ParseException  {
+		if(commands.length != 3) {
+			throw new ParseException("You need 2 arguments for a " + name + " command!", line);
+		}
+		
+		try { 
+			Integer.parseInt(commands[2]);
+		} catch (NumberFormatException e) {
+			throw new ParseException("The second parameter of a " + name + " command needs to be a number!", line);
+		}
+	}
+
+	public void setParameters(String[] commands) throws ParseException {
 		this.commands = commands;
 	}
 
 	public String getAsm() throws ParseException {
 		return asm;
-	}
-
-	public void setLine(int line) {
-		this.line = line;
-	}
-
-	public String toString() {
-		return name;
-	}
-	
-	protected void stringWithNumber(String[] commands) throws ParseException  {
-		if(commands.length != 2) {
-			throw new ParseException("You need 2 arguments for a " + name + " command!", line);
-		}
-		
-		try { 
-			Integer.parseInt(commands[1]);
-		} catch (NumberFormatException e) {
-			throw new ParseException("The second parameter of a " + name + " command needs to be a number!", line);
-		}
-		
-		parameters(commands);
 	}
 }

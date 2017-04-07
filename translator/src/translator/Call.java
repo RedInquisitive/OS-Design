@@ -3,7 +3,6 @@ package translator;
 import java.text.ParseException;
 
 import main.Replace;
-import main.Translator;
 
 public class Call extends Command {
 
@@ -83,14 +82,15 @@ public class Call extends Command {
 		super(name, "");
 	}
 	
-	public void parameters(String[] commands) throws ParseException {
+	public void setParameters(String[] commands) throws ParseException {
 		super.stringWithNumber(commands);
+		super.setParameters(commands);
 	}
 	
 	public String getAsm() {
 		return CALL
 			.replaceAll(Replace.UNIQUE, "" + unique++)
-			.replaceAll(Replace.IDX, commands[1])
-			.replaceAll(Replace.FUNCTION, Translator.getFunctionName());
+			.replaceAll(Replace.IDX, commands[2])
+			.replaceAll(Replace.FUNCTION, commands[1]);
 	}
 }

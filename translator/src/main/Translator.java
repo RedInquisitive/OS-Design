@@ -1,5 +1,7 @@
 package main;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import translator.Call;
 import translator.Command;
@@ -32,6 +34,37 @@ public class Translator {
 		commands.add(new Label("label"));
 		commands.add(new Call("call"));
 		commands.add(new Function("function"));
+		
+		Scanner reader = new Scanner(System.in);
+		int lineNumber = 0;
+		while(reader.hasNextLine()) {
+			try {
+				lineNumber++;
+				String[] command = reader.nextLine().replaceAll("//.*", "").trim().split(" ");
+				if(command.length == 0) continue;
+				if(command[0].equals("EOF")) break;
+				
+				Command found = null;
+				for(Command search : commands) {
+					if(search.toString().equals(command[0])) {
+						found = search;
+						break;
+					}
+				}
+				
+				if(found == null) throw new ParseException("Command " + command[0] + " not implemented!", lineNumber);
+				found.setLine(lineNumber);
+				found.setParameters(command);
+				System.out.println(found.getAsm());
+			} catch (ParseException e) {
+				System.err.println("An error occured during translation!");
+				System.err.println("On line " + e.getErrorOffset() + " an exception was thrown: ");
+				e.printStackTrace();
+				reader.close();
+				System.exit(-1);
+			}
+		}
+		reader.close();
 	}
 	
 	public static String getFileName() {
