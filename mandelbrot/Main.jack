@@ -1,0 +1,10 @@
+class Main {
+    function void main() {
+		var Mandelbrot graph;
+		do Float.init();
+        let graph = Mandelbrot.new();
+        do graph.calculate();
+        do graph.dispose();
+        return;
+    }
+}

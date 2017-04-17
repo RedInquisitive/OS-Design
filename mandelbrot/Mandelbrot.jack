@@ -1,0 +1,162 @@
+class Mandelbrot {
+	field int ITERATIONS;
+	field int COLORS;
+	field int WIDTH;
+	field int HEIGHT;
+	field Array colors;
+	field String clear;
+	
+	constructor Mandelbrot new() {
+		let ITERATIONS = 16;
+		let COLORS = 12;
+		let WIDTH = 64;
+		let HEIGHT = 23;
+		let colors = color();
+		let clear = "   ";
+		return this;
+	}
+	
+	method Array color() {
+		var Array symbol;
+		let symbol = Array.new(COLORS);
+		let symbol[0] = " ";
+		let symbol[1] = ".";
+		let symbol[2] = "-";
+		let symbol[3] = ":";
+		let symbol[4] = "=";
+		let symbol[5] = "*";
+		let symbol[6] = "+";
+		let symbol[7] = "#";
+		let symbol[8] = "%";
+		let symbol[9] = "0";
+		let symbol[10] = "@";
+		let symbol[11] = "W";
+		return symbol;
+	}
+	
+	method void calculate() {
+		var int row;
+		var int col;
+		var int iteration; 	
+		var int color;
+		var Float real;
+		var Float imag;
+		var Float x_new;
+		var Float y_new;
+		var Float x; 
+		var Float y;	
+		
+		let row = 0;
+		while (row < HEIGHT) {
+			let col = 0;
+			while (col < WIDTH) {
+				do Output.moveCursor(0,0);
+				do Output.printString(clear);
+				do Output.moveCursor(0,0);
+				do Output.printInt(col);
+				
+				//real = (col - WIDTH/2.0)*4.0/WIDTH;
+				let real = component(col, WIDTH);
+				
+				//imag = (row - HEIGHT/2.0)*4.0/WIDTH;
+				let imag = component(row, HEIGHT);
+				
+				let x = Float.new();
+				let y = Float.new();
+				let iteration = 0;
+				
+				while (compareXY(x, y) & (iteration < ITERATIONS)) {
+					let x_new = Float.newFloat(x);
+					let y_new = Float.newFloat(y);
+					
+					//x_new = x*x - y*y + real;
+					do x_new.mult(x);
+					do y_new.mult(y);
+					do x_new.sub(y_new);
+					do x_new.add(real);
+					
+					//y_new = 2.0*x*y + imag;
+					do y_new.setInt(2);
+					do y_new.mult(x);
+					do y_new.mult(y);
+					do y_new.add(imag);
+					
+					do x.dispose();
+					do y.dispose();
+					let x = x_new;
+					let y = y_new;
+					 
+					let iteration = iteration + 1;
+				}
+				
+				let color = iteration - (ITERATIONS - COLORS) - 1;
+				if (color < 0) {
+					let color = 0;
+				}
+				
+				do Output.moveCursor(row, col);
+				do Output.printString(colors[color]);
+				
+				do x.dispose();
+				do y.dispose();
+				do real.dispose();
+				do imag.dispose();
+				let col = col + 1;
+			}
+			let row = row + 1;
+		}
+		return;
+	}
+	
+	/**
+	 * Squares x and y and returns if it is <= 4.
+	 */
+	method boolean compareXY(Float x, Float y) {
+		var Float xsq; 
+		var Float ysq; 
+		var int compare;
+		
+		let xsq = Float.newFloat(x);
+		let ysq = Float.newFloat(y);
+		do xsq.mult(x);
+		do ysq.mult(y);
+		do xsq.add(ysq);
+		let compare = xsq.compareInt(4);
+		
+		do xsq.dispose();
+		do ysq.dispose();
+		
+		//the <= operator
+		if (compare = 1) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 * Returns a component of a set depending on the position
+	 * of the for loop and the total size of the for loop.
+	 */
+	method Float component( int pos, int size) {
+		var Float fpos; 
+		var Float fsize; 
+		let fpos = Float.new();
+		let fsize = Float.new();
+		
+		do fpos.setInt(pos);
+		do fsize.setInt(size);
+		do fsize.divInt(2);
+		do fpos.sub(fsize);
+		do fpos.multInt(4);
+		do fpos.divInt(WIDTH);
+		
+		do fsize.dispose();
+		return fpos;
+	}
+	
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}
