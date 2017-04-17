@@ -4,15 +4,19 @@ class Mandelbrot {
 	field int WIDTH;
 	field int HEIGHT;
 	field Array colors;
-	field String clear;
+	field String printRow;
+	field String printCol;
+	field String printSpace;
 	
 	constructor Mandelbrot new() {
-		let ITERATIONS = 16;
+		let ITERATIONS = 24;
 		let COLORS = 12;
 		let WIDTH = 64;
-		let HEIGHT = 23;
+		let HEIGHT = 22;
 		let colors = color();
-		let clear = "   ";
+		let printRow = "Row: ";
+		let printCol = ", Col: ";
+		let printSpace = " ";
 		return this;
 	}
 	
@@ -20,17 +24,17 @@ class Mandelbrot {
 		var Array symbol;
 		let symbol = Array.new(COLORS);
 		let symbol[0] = " ";
-		let symbol[1] = ".";
-		let symbol[2] = "-";
-		let symbol[3] = ":";
-		let symbol[4] = "=";
-		let symbol[5] = "*";
-		let symbol[6] = "+";
-		let symbol[7] = "#";
-		let symbol[8] = "%";
-		let symbol[9] = "0";
-		let symbol[10] = "@";
-		let symbol[11] = "W";
+		let symbol[1] = " ";
+		let symbol[2] = ".";
+		let symbol[3] = "-";
+		let symbol[4] = ":";
+		let symbol[5] = "=";
+		let symbol[6] = "*";
+		let symbol[7] = "+";
+		let symbol[8] = "#";
+		let symbol[9] = "%";
+		let symbol[10] = "0";
+		let symbol[11] = "@";
 		return symbol;
 	}
 	
@@ -51,9 +55,11 @@ class Mandelbrot {
 			let col = 0;
 			while (col < WIDTH) {
 				do Output.moveCursor(0,0);
-				do Output.printString(clear);
-				do Output.moveCursor(0,0);
+				do Output.printString(printRow);
+				do Output.printInt(row);
+				do Output.printString(printCol);
 				do Output.printInt(col);
+				do Output.printString(printSpace);
 				
 				//real = (col - WIDTH/2.0)*4.0/WIDTH;
 				let real = component(col, WIDTH);
@@ -89,12 +95,12 @@ class Mandelbrot {
 					let iteration = iteration + 1;
 				}
 				
-				let color = iteration - (ITERATIONS - COLORS) - 1;
+				let color = (iteration - 1) / 2;
 				if (color < 0) {
 					let color = 0;
 				}
 				
-				do Output.moveCursor(row, col);
+				do Output.moveCursor(row + 1, col);
 				do Output.printString(colors[color]);
 				
 				do x.dispose();
