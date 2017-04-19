@@ -4,14 +4,18 @@ class Main {
 		var int input;
 		var boolean ascii;
 		
+		//Ask for ascii or drawn mandelbrot graph
 		do Output.printString("Would you like an >A<sciibrot or a >S<ketchybrot?");
 		do Output.println();
 		do Output.printString("A/S> ");
 		let input = Keyboard.readChar();
+		
+		//65 = A
 		let ascii = (input = 65);
 		do Screen.clearScreen();
 
-		do Float.init();
+		//Init the float library (only if using slow floats)
+		//do Float.init();
         let graph = Mandelbrot.new(ascii);
         do graph.calculate();
         do graph.dispose();

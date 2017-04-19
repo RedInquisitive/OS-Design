@@ -3,12 +3,17 @@ class Mandelbrot {
 	field int COLORS;
 	field int WIDTH;
 	field int HEIGHT;
+	field int PERCISION;
 	field Array colors;
 	field String printRow;
 	field String printCol;
 	field String printSpace;
 	field boolean ascii;
 	
+	/**
+	 * Initalizes the variables required to draw the Mandelbrot
+	 * depending on the option chosen.
+	 */
 	constructor Mandelbrot new(boolean asc) {
 		let ascii = asc;
 		if (ascii) {
@@ -16,12 +21,14 @@ class Mandelbrot {
 			let COLORS = 64;
 			let WIDTH = 64;
 			let HEIGHT = 22;
+			let PERCISION = 30;
 			let colors = color();
 		} else {
 			let ITERATIONS = 32;
 			let COLORS = 2;
-			let WIDTH = 128;
-			let HEIGHT = 64;
+			let WIDTH = 256;
+			let HEIGHT = 118;
+			let PERCISION = 40;
 		}
 		
 		let printRow = "Row: ";
@@ -31,6 +38,10 @@ class Mandelbrot {
 		return this;
 	}
 	
+	/**
+	 * Fills the color array with Ascii colors.
+	 * (Auto generated)
+	 */
 	method Array color() {
 		var Array symbol;
 		let symbol = Array.new(COLORS);
@@ -101,6 +112,9 @@ class Mandelbrot {
 		return symbol;
 	}
 	
+	/**
+	 * Does all of the work
+	 */
 	method void calculate() {
 		var int row;
 		var int col;
@@ -113,10 +127,15 @@ class Mandelbrot {
 		var FastFloat x; 
 		var FastFloat y;	
 		
+		//for each row
 		let row = 0;
 		while (row < HEIGHT) {
+		
+			//for each col
 			let col = 0;
 			while (col < WIDTH) {
+			
+				//print the current position
 				do Output.moveCursor(0,0);
 				do Output.printString(printRow);
 				do Output.printInt(row);
@@ -130,10 +149,13 @@ class Mandelbrot {
 				//imag = (row - HEIGHT/2.0)*4.0/WIDTH;
 				let imag = component(row, HEIGHT);
 				
-				let x = FastFloat.new();
-				let y = FastFloat.new();
+				//x and y in imaginary plane
+				let x = FastFloat.new(PERCISION);
+				let y = FastFloat.new(PERCISION);
 				let iteration = 0;
 				
+				//compare x and y squares and adds the x and y components
+				//and checks to see if they are less than 4.
 				while (compareXY(x, y) & (iteration < ITERATIONS)) {
 					let x_new = FastFloat.newFastFloat(x);
 					let y_new = FastFloat.newFastFloat(y);
@@ -150,11 +172,13 @@ class Mandelbrot {
 					do y_new.mult(y);
 					do y_new.add(imag);
 					
+					//swap and dispose
 					do x.dispose();
 					do y.dispose();
 					let x = x_new;
 					let y = y_new;
-					 
+					
+					//go to the next iteration
 					let iteration = iteration + 1;
 				}
 				
@@ -163,17 +187,20 @@ class Mandelbrot {
 					let color = 0;
 				}
 				
+				//output to screen
 				if (ascii) {
 					do Output.moveCursor(row + 1, col);
 					do Output.printString(colors[color]);
 				} else {
 					if (iteration < ITERATIONS) {
 						do Screen.setColor(false);
-						do Screen.drawPixel(col, row + 12);
 					} else {
 						do Screen.setColor(true);
-						do Screen.drawPixel(col, row + 12);
 					}
+					do Screen.drawPixel(col * 2, row * 2 + 12);
+					do Screen.drawPixel(col * 2, row * 2 + 13);
+					do Screen.drawPixel(col * 2 + 1, row * 2 + 12);
+					do Screen.drawPixel(col * 2 + 1, row * 2 + 13);
 				}
 				
 				do x.dispose();
@@ -184,6 +211,12 @@ class Mandelbrot {
 			}
 			let row = row + 1;
 		}
+		
+		//finished!
+		do Output.moveCursor(0,0);
+		do Output.printString("                         ");
+		do Output.moveCursor(0,0);
+		do Output.printString("Job's finished!");
 		return;
 	}
 	
@@ -220,8 +253,8 @@ class Mandelbrot {
 	method FastFloat component( int pos, int size) {
 		var FastFloat fpos; 
 		var FastFloat fsize; 
-		let fpos = FastFloat.new();
-		let fsize = FastFloat.new();
+		let fpos = FastFloat.new(PERCISION);
+		let fsize = FastFloat.new(PERCISION);
 		
 		do fpos.setInt(pos);
 		do fsize.setInt(size);

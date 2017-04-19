@@ -2,58 +2,96 @@ class FastFloat {
 	field int float;
 	field int PERCISION;
 	
-	constructor FastFloat new() {
-		let PERCISION = 25;
+	/**
+	 * Creates a new fast float. Constructor contains
+	 * the percision of this float.
+	 *
+	 * A bigger percision is more accurate, but more prone to
+	 * integer overflows, witch this library does not check for.
+	 */
+	constructor FastFloat new( int per) {
+		let PERCISION = per;
 		let float = 0;
 		return this;
 	}
 	
+	/**
+	 * Creates a new fast float based on another fast float.
+	 * Steals the percision of the passed float.
+	 */
 	constructor FastFloat newFastFloat(FastFloat f) {
-		let PERCISION = 25;
+		let PERCISION = f._getPer();
 		let float = f._getFloat();
 		return this;
 	}
 	
-	method void setInt(int i) {
+	/**
+	 * Sets this fast float to an integer value.
+	 */
+	method void setInt( int i) {
 		let float = Math.multiply(i, PERCISION);
 		return;
 	}
 	
-	method void addInt(int i) {
+	/**
+	 * Adds an integer to this float (exact)
+	 */
+	method void addInt( int i) {
 		let float =  float + Math.multiply(i, PERCISION);
 		return;
 	}
 	
+	/**
+	 * Adds a float to this float.
+	 */
 	method void add(FastFloat f) {
 		let float =  float + f._getFloat();
 		return;
 	}
 	
-	method void subInt(int i) {
+	/**
+	 * Subtracts an int from this float (exact)
+	 */
+	method void subInt( int i) {
 		let float = float - Math.multiply(i, PERCISION);
 		return;
 	}
 	
+	/**
+	 * Subtracts a float from this float
+	 */
 	method void sub(FastFloat f) {
 		let float = float - f._getFloat();
 		return;
 	}
 	
-	method void multInt(int i) {
+	/**
+	 * Multiplies this float by an integer (exact)
+	 */
+	method void multInt( int i) {
 		let float = Math.multiply(float, i);
 		return;
 	}
 	
+	/**
+	 * Multiplies a float by this float
+	 */
 	method void mult(FastFloat f) {
 		let float = Math.divide(Math.multiply(float, f._getFloat()), PERCISION);
 		return;
 	}
 	
-	method void divInt(int i) {
+	/**
+	 * Divides a float by an integer (exact)
+	 */
+	method void divInt( int i) {
 		let float = float / i;
 		return;
 	}
 	
+	/**
+	 * divides this float by a float
+	 */
 	method void div(FastFloat f) {
 		let float = Math.divide(Math.multiply(float, PERCISION), f._getFloat());
 		return;
@@ -74,7 +112,7 @@ class FastFloat {
 		return 1;
 	}
 	
-	method int compareInt(int i) {
+	method int compareInt( int i) {
 		let i = Math.multiply(i, PERCISION);
 		if(float < i) {
 			return -1;
@@ -85,7 +123,13 @@ class FastFloat {
 		return 1;
 	}
 	
+	//internal
 	method int _getFloat() {
 		return float;
+	}
+	
+	//internal
+	method int _getPer() {
+		return PERCISION;
 	}
 }
