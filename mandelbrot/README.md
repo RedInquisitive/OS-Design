@@ -11,3 +11,8 @@ When the program starts, use the keys "A" or "S" to choose how you want the mand
 Wait some time for it to render...
 
 And you get a mandelbrot!
+
+### Screenshots
+
+![ASCII](/mandelbrot/ascii.png?raw=true "ASCII")
+![Sketch](/mandelbrot/sketch.png?raw=true "Sketch")
