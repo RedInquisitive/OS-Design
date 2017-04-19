@@ -1,8 +1,18 @@
 class Main {
     function void main() {
 		var Mandelbrot graph;
+		var int input;
+		var boolean ascii;
+		
+		do Output.printString("Would you like an >A<sciibrot or a >S<ketchybrot?");
+		do Output.println();
+		do Output.printString("A/S> ");
+		let input = Keyboard.readChar();
+		let ascii = (input = 65);
+		do Screen.clearScreen();
+
 		do Float.init();
-        let graph = Mandelbrot.new();
+        let graph = Mandelbrot.new(ascii);
         do graph.calculate();
         do graph.dispose();
         return;

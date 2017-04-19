@@ -1,0 +1,91 @@
+class FastFloat {
+	field int float;
+	field int PERCISION;
+	
+	constructor FastFloat new() {
+		let PERCISION = 25;
+		let float = 0;
+		return this;
+	}
+	
+	constructor FastFloat newFastFloat(FastFloat f) {
+		let PERCISION = 25;
+		let float = f._getFloat();
+		return this;
+	}
+	
+	method void setInt(int i) {
+		let float = Math.multiply(i, PERCISION);
+		return;
+	}
+	
+	method void addInt(int i) {
+		let float =  float + Math.multiply(i, PERCISION);
+		return;
+	}
+	
+	method void add(FastFloat f) {
+		let float =  float + f._getFloat();
+		return;
+	}
+	
+	method void subInt(int i) {
+		let float = float - Math.multiply(i, PERCISION);
+		return;
+	}
+	
+	method void sub(FastFloat f) {
+		let float = float - f._getFloat();
+		return;
+	}
+	
+	method void multInt(int i) {
+		let float = Math.multiply(float, i);
+		return;
+	}
+	
+	method void mult(FastFloat f) {
+		let float = Math.divide(Math.multiply(float, f._getFloat()), PERCISION);
+		return;
+	}
+	
+	method void divInt(int i) {
+		let float = float / i;
+		return;
+	}
+	
+	method void div(FastFloat f) {
+		let float = Math.divide(Math.multiply(float, PERCISION), f._getFloat());
+		return;
+	}
+	
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+	
+	method int compare(FastFloat f) {
+		if(float < f._getFloat()) {
+			return -1;
+		}
+		if(float = f._getFloat()) {
+			return 0;
+		}
+		return 1;
+	}
+	
+	method int compareInt(int i) {
+		let i = Math.multiply(i, PERCISION);
+		if(float < i) {
+			return -1;
+		}
+		if(float = i) {
+			return 0;
+		}
+		return 1;
+	}
+	
+	method int _getFloat() {
+		return float;
+	}
+}

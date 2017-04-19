@@ -7,34 +7,97 @@ class Mandelbrot {
 	field String printRow;
 	field String printCol;
 	field String printSpace;
+	field boolean ascii;
 	
-	constructor Mandelbrot new() {
-		let ITERATIONS = 24;
-		let COLORS = 12;
-		let WIDTH = 64;
-		let HEIGHT = 22;
-		let colors = color();
+	constructor Mandelbrot new(boolean asc) {
+		let ascii = asc;
+		if (ascii) {
+			let ITERATIONS = 64;
+			let COLORS = 64;
+			let WIDTH = 64;
+			let HEIGHT = 22;
+			let colors = color();
+		} else {
+			let ITERATIONS = 32;
+			let COLORS = 2;
+			let WIDTH = 128;
+			let HEIGHT = 64;
+		}
+		
 		let printRow = "Row: ";
 		let printCol = ", Col: ";
 		let printSpace = " ";
+		
 		return this;
 	}
 	
 	method Array color() {
 		var Array symbol;
 		let symbol = Array.new(COLORS);
+		let symbol[63] = "$";
+		let symbol[62] = "@";
+		let symbol[61] = "B";
+		let symbol[60] = "%";
+		let symbol[59] = "8";
+		let symbol[58] = "&";
+		let symbol[57] = "W";
+		let symbol[56] = "M";
+		let symbol[55] = "#";
+		let symbol[54] = "*";
+		let symbol[53] = "o";
+		let symbol[52] = "a";
+		let symbol[51] = "h";
+		let symbol[50] = "k";
+		let symbol[49] = "Z";
+		let symbol[48] = "O";
+		let symbol[47] = "0";
+		let symbol[46] = "Q";
+		let symbol[45] = "L";
+		let symbol[44] = "C";
+		let symbol[43] = "J";
+		let symbol[42] = "U";
+		let symbol[41] = "Y";
+		let symbol[40] = "X";
+		let symbol[39] = "z";
+		let symbol[38] = "c";
+		let symbol[37] = "v";
+		let symbol[36] = "u";
+		let symbol[35] = "n";
+		let symbol[34] = "x";
+		let symbol[33] = "r";
+		let symbol[32] = "j";
+		let symbol[31] = "f";
+		let symbol[30] = "t";
+		let symbol[29] = "/";
+		let symbol[28] = "\\";
+		let symbol[27] = "|";
+		let symbol[26] = "(";
+		let symbol[25] = ")";
+		let symbol[24] = "1";
+		let symbol[23] = "{";
+		let symbol[22] = "}";
+		let symbol[21] = "[";
+		let symbol[20] = "]";
+		let symbol[19] = "?";
+		let symbol[18] = "-";
+		let symbol[17] = "_";
+		let symbol[16] = "+";
+		let symbol[15] = "~";
+		let symbol[14] = "<";
+		let symbol[13] = ">";
+		let symbol[12] = "i";
+		let symbol[11] = "!";
+		let symbol[10] = "l";
+		let symbol[9] = "I";
+		let symbol[8] = ";";
+		let symbol[7] = ":";
+		let symbol[6] = ",";
+		let symbol[5] = "\"";
+		let symbol[4] = "^";
+		let symbol[3] = "`";
+		let symbol[2] = "'";
+		let symbol[1] = ".";
 		let symbol[0] = " ";
-		let symbol[1] = " ";
-		let symbol[2] = ".";
-		let symbol[3] = "-";
-		let symbol[4] = ":";
-		let symbol[5] = "=";
-		let symbol[6] = "*";
-		let symbol[7] = "+";
-		let symbol[8] = "#";
-		let symbol[9] = "%";
-		let symbol[10] = "0";
-		let symbol[11] = "@";
 		return symbol;
 	}
 	
@@ -43,12 +106,12 @@ class Mandelbrot {
 		var int col;
 		var int iteration; 	
 		var int color;
-		var Float real;
-		var Float imag;
-		var Float x_new;
-		var Float y_new;
-		var Float x; 
-		var Float y;	
+		var FastFloat real;
+		var FastFloat imag;
+		var FastFloat x_new;
+		var FastFloat y_new;
+		var FastFloat x; 
+		var FastFloat y;	
 		
 		let row = 0;
 		while (row < HEIGHT) {
@@ -67,13 +130,13 @@ class Mandelbrot {
 				//imag = (row - HEIGHT/2.0)*4.0/WIDTH;
 				let imag = component(row, HEIGHT);
 				
-				let x = Float.new();
-				let y = Float.new();
+				let x = FastFloat.new();
+				let y = FastFloat.new();
 				let iteration = 0;
 				
 				while (compareXY(x, y) & (iteration < ITERATIONS)) {
-					let x_new = Float.newFloat(x);
-					let y_new = Float.newFloat(y);
+					let x_new = FastFloat.newFastFloat(x);
+					let y_new = FastFloat.newFastFloat(y);
 					
 					//x_new = x*x - y*y + real;
 					do x_new.mult(x);
@@ -95,13 +158,23 @@ class Mandelbrot {
 					let iteration = iteration + 1;
 				}
 				
-				let color = (iteration - 1) / 2;
+				let color = iteration - 1;
 				if (color < 0) {
 					let color = 0;
 				}
 				
-				do Output.moveCursor(row + 1, col);
-				do Output.printString(colors[color]);
+				if (ascii) {
+					do Output.moveCursor(row + 1, col);
+					do Output.printString(colors[color]);
+				} else {
+					if (iteration < ITERATIONS) {
+						do Screen.setColor(false);
+						do Screen.drawPixel(col, row + 12);
+					} else {
+						do Screen.setColor(true);
+						do Screen.drawPixel(col, row + 12);
+					}
+				}
 				
 				do x.dispose();
 				do y.dispose();
@@ -117,13 +190,13 @@ class Mandelbrot {
 	/**
 	 * Squares x and y and returns if it is <= 4.
 	 */
-	method boolean compareXY(Float x, Float y) {
-		var Float xsq; 
-		var Float ysq; 
+	method boolean compareXY(FastFloat x, FastFloat y) {
+		var FastFloat xsq; 
+		var FastFloat ysq; 
 		var int compare;
 		
-		let xsq = Float.newFloat(x);
-		let ysq = Float.newFloat(y);
+		let xsq = FastFloat.newFastFloat(x);
+		let ysq = FastFloat.newFastFloat(y);
 		do xsq.mult(x);
 		do ysq.mult(y);
 		do xsq.add(ysq);
@@ -144,17 +217,17 @@ class Mandelbrot {
 	 * Returns a component of a set depending on the position
 	 * of the for loop and the total size of the for loop.
 	 */
-	method Float component( int pos, int size) {
-		var Float fpos; 
-		var Float fsize; 
-		let fpos = Float.new();
-		let fsize = Float.new();
+	method FastFloat component( int pos, int size) {
+		var FastFloat fpos; 
+		var FastFloat fsize; 
+		let fpos = FastFloat.new();
+		let fsize = FastFloat.new();
 		
 		do fpos.setInt(pos);
 		do fsize.setInt(size);
 		do fsize.divInt(2);
 		do fpos.sub(fsize);
-		do fpos.multInt(4);
+		do fpos.multInt(5);
 		do fpos.divInt(WIDTH);
 		
 		do fsize.dispose();
