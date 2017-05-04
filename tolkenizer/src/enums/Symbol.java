@@ -19,10 +19,11 @@ public enum Symbol {
 	LPOINT('<'),
 	RPOINT('>'),
 	EQ('='),
-	NOT('~');
+	NOT('~'),
+	QUOTE('"');
 	
-	public final char symbol;
+	public final char name;
 	private Symbol(char symbol) {
-		this.symbol = symbol;
+		this.name = symbol;
 	}
 }
