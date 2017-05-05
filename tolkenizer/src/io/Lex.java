@@ -25,22 +25,22 @@ public class Lex {
 		if(read.trim().equals("")) {
 			type = Type.NOTHING;
 			str = read;
-			val = 0;
+			val = -1;
 			return;
 		}
 		if(symbol != null) {
 			type = Type.SYMBOL;
 			str = read;
-			val = 0;
+			val = -1;
 			return;
 		}
 		if(keyword != null){
 			type = Type.KEYWORD;
 			str = read;
-			val = 0;
+			val = -1;
 			return;
 		}
-		if(read.matches("^[0-9]*")) {
+		if(read.matches("^[0-9].")) {
 			type = Type.INTEGER;
 			str = read;
 			val = parseInt(read);
@@ -49,10 +49,10 @@ public class Lex {
 		if(read.contains("\"")) {
 			type = Type.STRING;
 			str = parseStr(read, reader);
-			val = 0;
+			val = -1;
 			return;
 		}
-		val = 0;
+		val = -1;
 		str = read;
 		type = Type.IDENTIFIER;
 	}
