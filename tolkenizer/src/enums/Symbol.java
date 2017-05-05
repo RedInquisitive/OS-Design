@@ -19,11 +19,24 @@ public enum Symbol {
 	LPOINT('<'),
 	RPOINT('>'),
 	EQ('='),
-	NOT('~'),
-	QUOTE('"');
+	NOT('~');
 	
 	public final char name;
+	
 	private Symbol(char symbol) {
 		this.name = symbol;
+	}
+	
+	public String toString() {
+		return name + "";
+	}
+	
+	public static Symbol fromString(String name) {
+		for(Symbol sym : Symbol.values()) {
+			if(name.equals(sym.toString())) {
+				return sym;
+			}
+		}
+		return null;
 	}
 }

@@ -28,4 +28,17 @@ public enum Keyword {
 	private Keyword(String name) {
 		this.name = name;
 	}
+	
+	public String toString() {
+		return name;
+	}
+	
+	public static Keyword fromString(String name) {
+		for(Keyword key : Keyword.values()) {
+			if(name.equals(key.toString())) {
+				return key;
+			}
+		}
+		return null;
+	}
 }

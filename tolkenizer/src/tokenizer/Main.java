@@ -1,7 +1,4 @@
-package tolkenizer;
-
-import java.util.Scanner;
-import java.util.regex.Pattern;
+package tokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,27 +13,24 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import enums.Symbol;
+import io.Lex;
+import io.Read;
 
 public class Main {
-	
-	static public final String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
-	
+
 	public static void main(String[]args) {
-		
-		StringBuilder regex = new StringBuilder();
-		for(Symbol s : Symbol.values()) {
-			regex.append("|" + String.format(WITH_DELIMITER, Pattern.quote(s.name + "")));
+		try {
+			Read read = new Read(System.in);
+			while(read.hasNext()) {
+				Lex lex = read.next();
+				System.out.print(lex.type + ", ");
+				System.out.print(lex.str + ", ");
+				System.out.println(lex.val);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		String find = "(\\s+)|([\\r\\n]+)" + regex.toString();
-		System.out.println(find);
-		Pattern pattern = Pattern.compile(find);
 		
-		Scanner reader = new Scanner(System.in);
-		reader.useDelimiter(pattern);
-		while(reader.hasNext()) {
-			System.out.println(reader.next());
-		}
 		
 		try {
 			DocumentBuilderFactory df = DocumentBuilderFactory.newInstance();
