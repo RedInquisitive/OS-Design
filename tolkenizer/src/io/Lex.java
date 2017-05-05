@@ -11,25 +11,30 @@ public class Lex {
 	
 	private static int count = 0;
 	public final Type type;
+	public final Symbol symbol;
+	public final Keyword keyword;
 	public final String str;
 	public final int val;
 	
 	public Lex(Scanner reader) throws ParseException {
 		count++;
 		String read = reader.next();
+		symbol = Symbol.fromString(read);
+		keyword = Keyword.fromString(read);
+		
 		if(read.trim().equals("")) {
 			type = Type.NOTHING;
 			str = read;
 			val = 0;
 			return;
 		}
-		if(Symbol.fromString(read) != null) {
+		if(symbol != null) {
 			type = Type.SYMBOL;
 			str = read;
 			val = 0;
 			return;
 		}
-		if(Keyword.fromString(read) != null){
+		if(keyword != null){
 			type = Type.KEYWORD;
 			str = read;
 			val = 0;
@@ -43,8 +48,8 @@ public class Lex {
 		}
 		if(read.contains("\"")) {
 			type = Type.STRING;
-			val = 0;
 			str = parseStr(read, reader);
+			val = 0;
 			return;
 		}
 		val = 0;
@@ -53,7 +58,6 @@ public class Lex {
 	}
 
 	private String parseStr(String read, Scanner reader) throws ParseException {
-		
 		//check if second quote is in this token
 		read = read.substring(read.indexOf("\"") + 1);
 		if(read.indexOf("\"") >= 0)
