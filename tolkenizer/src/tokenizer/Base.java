@@ -1,21 +1,14 @@
 package tokenizer;
 
-import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public abstract class Base {
+import io.Lex;
+import io.XmlName;
+
+public abstract class Base implements XmlName {
 	public ArrayList<Base> stack = new ArrayList<>();
 
 	public final String xml;
@@ -24,7 +17,21 @@ public abstract class Base {
 	public Base(String xml, Element root) {
 		this.xml = xml;
 		this.root = root;
+		run();
 	}
 	
+	public abstract void run();
 	
+	protected final void requires(Element root, XmlName require, Lex lex) throws ParseException {
+		if(lex == null || require.xml().equals(lex.xml())) 
+			throw new ParseException(lex.xmlText() + " is not a " + require.xml() + " " + require.xmlText(), Lex.getCount());
+		Element e = root.getOwnerDocument().createElement(lex.xml());
+		e.setTextContent(lex.xmlText());
+		root.appendChild(e);
+	}
+	
+	protected final Element decend(Element root, XmlName name) {
+		Element e = root.getOwnerDocument().createElement(name.xml());
+		return e;
+	}
 }

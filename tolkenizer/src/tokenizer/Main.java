@@ -23,9 +23,7 @@ public class Main {
 			Read read = new Read(System.in);
 			while(read.hasNext()) {
 				Lex lex = read.next();
-				System.out.print(lex.type + ", ");
-				System.out.print(lex.str + ", ");
-				System.out.println(lex.val);
+				System.out.println(lex.xml() + " " + lex.xmlText());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,42 +1,47 @@
 package enums;
 
-public enum Symbol {
-	LBRACE('{'),
-	RBRACE('}'),
-	LPER('('),
-	RPER(')'),
-	LBRAK('['),
-	RBRAK(']'),
-	DOT('.'),
-	COMMA(','),
-	SEMI(';'),
-	PLUS('+'),
-	MINUS('-'),
-	MULT('*'),
-	DIV('/'),
-	AND('&'),
-	OR('|'),
-	LPOINT('<'),
-	RPOINT('>'),
-	EQ('='),
-	NOT('~');
+import io.XmlName;
+
+public enum Symbol implements XmlName {
+	LBRACE("{"),
+	RBRACE("}"),
+	LPER("("),
+	RPER(")"),
+	LBRAK("["),
+	RBRAK("]"),
+	DOT("."),
+	COMMA(","),
+	SEMI(";"),
+	PLUS("+"),
+	MINUS("-"),
+	MULT("*"),
+	DIV("/"),
+	AND("&"),
+	OR("|"),
+	LPOINT("<"),
+	RPOINT(">"),
+	EQ("="),
+	NOT("~");
 	
-	public final char name;
-	
-	private Symbol(char symbol) {
+	private final String name;
+	private Symbol(String symbol) {
 		this.name = symbol;
 	}
 	
-	public String toString() {
-		return name + "";
-	}
-	
-	public static Symbol fromString(String name) {
+	public static Symbol raw(String name) {
 		for(Symbol sym : Symbol.values()) {
-			if(name.equals(sym.toString())) {
+			if(name.equals(sym.xmlText())) {
 				return sym;
 			}
 		}
 		return null;
+	}
+	
+	public String xml() {
+		return Type.SYMBOL.xml();
+	}
+
+	public String xmlText() {
+		return name;
 	}
 }

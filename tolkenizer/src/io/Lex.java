@@ -7,54 +7,45 @@ import enums.Keyword;
 import enums.Symbol;
 import enums.Type;
 
-public class Lex {
+public class Lex implements XmlName {
 	
-	private static int count = 0;
 	public final Type type;
 	public final Symbol symbol;
 	public final Keyword keyword;
-	public final String str;
-	public final int val;
+	
+	private String str;
+	private static int count = 0;
+	private int val;
 	
 	public Lex(Scanner reader) throws ParseException {
 		count++;
-		String read = reader.next();
-		symbol = Symbol.fromString(read);
-		keyword = Keyword.fromString(read);
-		
-		if(read.trim().equals("")) {
-			type = Type.NOTHING;
-			str = read;
-			val = -1;
-			return;
+		String read = "";
+		while(read.trim().equals("")) {
+			read = reader.next();
 		}
+		symbol = Symbol.raw(read);
+		keyword = Keyword.raw(read);
+		
 		if(symbol != null) {
 			type = Type.SYMBOL;
-			str = read;
-			val = -1;
 			return;
 		}
 		if(keyword != null){
 			type = Type.KEYWORD;
-			str = read;
-			val = -1;
 			return;
 		}
-		if(read.matches("^[0-9].")) {
+		if(read.matches("^[0-9].*")) {
 			type = Type.INTEGER;
-			str = read;
 			val = parseInt(read);
 			return;
 		}
 		if(read.contains("\"")) {
 			type = Type.STRING;
 			str = parseStr(read, reader);
-			val = -1;
 			return;
 		}
-		val = -1;
-		str = read;
 		type = Type.IDENTIFIER;
+		str = read;
 	}
 
 	private String parseStr(String read, Scanner reader) throws ParseException {
@@ -64,10 +55,11 @@ public class Lex {
 			return read.substring(0, read.indexOf("\""));
 		
 		//if not, read until the second quote
+		count++;
 		reader.useDelimiter(Read.STRING);
 		String next = reader.next();
 		reader.useDelimiter(Read.TOKEN);
-		if(!next.contains("\"")) throw new ParseException("End of string not found at \"" + next + "\"", count);
+		if(!next.contains("\"")) throw new ParseException("End of string not found at \"" + next + "\"", getCount());
 		read += next.substring(0, next.indexOf("\""));
 		return read;
 	}
@@ -77,11 +69,37 @@ public class Lex {
 		try {
 			val = Integer.parseInt(read);
 		} catch(NumberFormatException e) {
-			throw new ParseException("Expected integer at \"" + read + "\"", count);
+			throw new ParseException("Expected integer at \"" + read + "\"", getCount());
 		}
 		if (val > 32767 || val < 0) {
-			throw new ParseException("Out of range number at \"" + read + "\"", count);
+			throw new ParseException("Out of range number at \"" + read + "\"", getCount());
 		}
 		return val;
+	}
+
+	public static int getCount() {
+		return count;
+	}
+
+	public String xml() {
+		return type.xml();
+	}
+
+	public String xmlText() {
+		switch(type) {
+		case IDENTIFIER:
+			return str;
+		case STRING:
+			return str;
+		case INTEGER:
+			return val + "";
+		case KEYWORD:
+			return keyword.xmlText();
+		case SYMBOL:
+			return symbol.xmlText();
+		default:
+			System.err.println("The default statement should never fire!");
+			return null;
+		}
 	}
 }

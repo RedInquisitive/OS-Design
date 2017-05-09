@@ -1,6 +1,8 @@
 package enums;
 
-public enum Keyword {
+import io.XmlName;
+
+public enum Keyword implements XmlName {
 	CLASS("class"),
 	CONSTRUCTOR("constructor"),
 	FUNCTION("function"),
@@ -23,22 +25,25 @@ public enum Keyword {
 	WHILE("while"),
 	RETURN("return");
 	
-	public final String name;
-	
+	private final String name;
 	private Keyword(String name) {
 		this.name = name;
 	}
 	
-	public String toString() {
-		return name;
-	}
-	
-	public static Keyword fromString(String name) {
+	public static Keyword raw(String name) {
 		for(Keyword key : Keyword.values()) {
-			if(name.equals(key.toString())) {
+			if(name.equals(key.xmlText())) {
 				return key;
 			}
 		}
 		return null;
+	}
+
+	public String xml() {
+		return Type.KEYWORD.xml();
+	}
+
+	public String xmlText() {
+		return name;
 	}
 }

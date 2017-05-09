@@ -16,7 +16,7 @@ public class Read {
 	
 	static {
 		StringBuilder regex = new StringBuilder();
-		for(Symbol s : Symbol.values()) regex.append("|" + String.format(DELIMITER_SEPERATE, Pattern.quote(s.name + "")));
+		for(Symbol s : Symbol.values()) regex.append("|" + String.format(DELIMITER_SEPERATE, Pattern.quote(s.xmlText() + "")));
 		String find = "(\\s+)|([\\r\\n]+)" + regex.toString();
 		TOKEN = Pattern.compile(find);
 		STRING = Pattern.compile(String.format(DELIMITER_AFTER, Pattern.quote("\"")) + "|([\\r\\n]+)");
