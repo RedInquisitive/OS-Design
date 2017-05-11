@@ -1,6 +1,7 @@
-package enums;
+package symbols;
 
-import io.XmlName;
+import structure.Lexical;
+import xml.XmlName;
 
 public enum Symbol implements XmlName {
 	LBRACE("{"),
@@ -38,7 +39,7 @@ public enum Symbol implements XmlName {
 	}
 	
 	public String xml() {
-		return Type.SYMBOL.xml();
+		return Lexical.SYMBOL.xml();
 	}
 
 	public String xmlText() {

@@ -1,6 +1,7 @@
-package enums;
+package symbols;
 
-import io.XmlName;
+import structure.Lexical;
+import xml.XmlName;
 
 public enum Keyword implements XmlName {
 	CLASS("class"),
@@ -40,7 +41,7 @@ public enum Keyword implements XmlName {
 	}
 
 	public String xml() {
-		return Type.KEYWORD.xml();
+		return Lexical.KEYWORD.xml();
 	}
 
 	public String xmlText() {

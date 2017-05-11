@@ -1,5 +1,7 @@
 package tokenizer;
 
+import java.text.ParseException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,30 +15,27 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import io.Lex;
-import io.Read;
+import io.Reader;
+import io.Token;
+import blocks.Class;
 
 public class Main {
 
+	public static Reader read;
+	
 	public static void main(String[]args) {
-		try {
-			Read read = new Read(System.in);
-			while(read.hasNext()) {
-				Lex lex = read.next();
-				System.out.println(lex.xml() + " " + lex.xmlText());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		
 		try {
 			DocumentBuilderFactory df = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = df.newDocumentBuilder();
 			Document doc = db.newDocument();
 			
 			Element root = doc.createElement("tokens");
-			root.appendChild(root.getOwnerDocument().createTextNode("test"));
+			read = new Reader(System.in);
+			Token token = read.next();
+			if(Class.verify(token)) {
+				
+				new Class(root).run(token);;
+			}
 			doc.appendChild(root);
 
 			TransformerFactory tf = TransformerFactory.newInstance();
@@ -53,6 +52,12 @@ public class Main {
 			pce.printStackTrace();
 		} catch (TransformerException tfe) {
 			tfe.printStackTrace();
+		} catch(ParseException e) {
+			e.printStackTrace();
 		}
+	}
+	
+	public static ParseException textlessXML(String className) {
+		return new ParseException("A " + className + " has no body text. This is a programmer's fault.", Reader.getCount());
 	}
 }
