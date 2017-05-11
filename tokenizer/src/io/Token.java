@@ -23,18 +23,15 @@ public class Token implements XmlName {
 		this.val = val;
 	}
 
-	public Lexical getLexical() throws ParseException {
-		if(lexical == null) throw new ParseException("Expected a type.", Reader.getCount());
+	public Lexical getLexical() {
 		return lexical;
 	}
 
-	public Symbol getSymbol() throws ParseException {
-		if(symbol == null) throw new ParseException("Expected a symbol.", Reader.getCount());
+	public Symbol getSymbol() {
 		return symbol;
 	}
 
-	public Keyword getKeyword() throws ParseException {
-		if(keyword == null) throw new ParseException("Expected a keyword.", Reader.getCount());
+	public Keyword getKeyword() {
 		return keyword;
 	}
 

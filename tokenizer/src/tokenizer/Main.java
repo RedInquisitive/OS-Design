@@ -33,7 +33,6 @@ public class Main {
 			read = new Reader(System.in);
 			Token token = read.next();
 			if(Class.verify(token)) {
-				
 				new Class(root).run(token);;
 			}
 			doc.appendChild(root);
@@ -53,6 +52,7 @@ public class Main {
 		} catch (TransformerException tfe) {
 			tfe.printStackTrace();
 		} catch(ParseException e) {
+			System.err.println("Error on symbol " + e.getErrorOffset() + " during parsing!");
 			e.printStackTrace();
 		}
 	}

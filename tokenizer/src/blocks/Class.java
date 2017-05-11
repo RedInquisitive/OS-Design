@@ -21,32 +21,39 @@ public class Class extends Base {
 
 	public void run(Token header) throws ParseException {
 		Token next;
+		
+		//Classes start with the keyword "class"
 		if(!verify(header))
 			throw new ParseException("Expected the word class!", Reader.getCount());
 		append(header);
 		
+		//A class requires a name
 		next = Main.read.next();
 		if(next.getLexical() != Lexical.IDENTIFIER) 
 			throw new ParseException("Class name is not a valid identifier!", Reader.getCount());
-		append(next);
+		append(next, Program.CLASS_NAME);
 		
+		//A class requires an open {
 		next = Main.read.next();
 		if(next.getSymbol() != Symbol.LBRACE) 
 			throw new ParseException("Class requires open brace after identifier!", Reader.getCount());
 		append(next);
 		
+		//Read any amount, including 0, of
 		while(true) {
 			next = Main.read.next();
 			
-			if(ClassVarDec.verify(next)) {
-				Element classVarDec = decend(Program.DEC_VAR_CLASS);
-				new ClassVarDec(classVarDec).run(next);
+			//Class variables
+			if(VarDec.verifyClass(next)) {
+				Element classVarDec = decend(Program.CLASS_VAR_DEC);
+				new VarDec(classVarDec, Program.CLASS_VAR_DEC).run(next);
 				root.appendChild(classVarDec);
 				continue;
 			}
 			
+			//Class subroutines
 			if(SubroutineDec.verify(next)) {
-				Element subroutineDec = decend(Program.DEC_SUBROUTINE);
+				Element subroutineDec = decend(Program.SUBROUTINE_DEC);
 				new SubroutineDec(subroutineDec).run(next);
 				root.appendChild(subroutineDec);
 				continue;
@@ -54,16 +61,13 @@ public class Class extends Base {
 			break;
 		}
 		
+		//Class closing brace
 		if(next.getSymbol() != Symbol.RBRACE) 
 			throw new ParseException("Class requires closed brace after body!", Reader.getCount());
 		append(next);
 	}
 
 	public static boolean verify(Token header) {
-		try {
-			return header.getKeyword() == Keyword.CLASS;
-		} catch (ParseException e) {
-			return false;
-		}
+		return header.getKeyword() == Keyword.CLASS;
 	}
 }

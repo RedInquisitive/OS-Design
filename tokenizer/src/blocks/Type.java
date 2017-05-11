@@ -7,6 +7,7 @@ import org.w3c.dom.Element;
 import io.Reader;
 import io.Token;
 import structure.Lexical;
+import structure.Program;
 import symbols.Keyword;
 import tokenizer.Base;
 
@@ -19,20 +20,19 @@ public class Type extends Base {
 	public void run(Token header) throws ParseException {
 		if(!verify(header))
 			throw new ParseException("Expected the keyword int, char, boolean, or at least a plain-ol' identifier!", Reader.getCount());
-		append(header);
+
+		//Require built in types or a class name
+		if(header.getLexical() == Lexical.KEYWORD) {
+			append(header);
+		} else {
+			append(header, Program.CLASS_NAME);
+		}
 	}
 	
 	public static boolean verify(Token header) {
-		try {
-			return	header.getKeyword() == Keyword.INT || 
-					header.getKeyword() == Keyword.CHAR || 
-					header.getKeyword() == Keyword.BOOLEAN;
-		} catch (ParseException e) {
-			try {
-				return header.getLexical() == Lexical.IDENTIFIER;
-			} catch (ParseException f) {
-				return false;
-			}
-		}
+		return	header.getKeyword() == Keyword.INT || 
+				header.getKeyword() == Keyword.CHAR || 
+				header.getKeyword() == Keyword.BOOLEAN ||
+				header.getLexical() == Lexical.IDENTIFIER;
 	}
 }
