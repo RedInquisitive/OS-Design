@@ -19,7 +19,7 @@ public class Type extends Base {
 
 	public void run(Token header) throws ParseException {
 		if(!verify(header))
-			throw new ParseException("Expected the keyword int, char, boolean, or at least a plain-ol' identifier!", Reader.getCount());
+			throw new ParseException("Expected the keyword int, char, boolean, or identifier!", Reader.getCount());
 
 		//Require built in types or a class name
 		if(header.getLexical() == Lexical.KEYWORD) {

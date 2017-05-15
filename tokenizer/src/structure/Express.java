@@ -8,7 +8,10 @@ import xml.XmlName;
 public enum Express implements XmlName {
 	EXPRESSION_LIST("expressionList"),
 	EXPRESSION("expression"),
-	TERM("term");
+	TERM("term"),
+	
+	//non terminal
+	OP("op");
 	
 	private final String name;
 	private Express(String name) {

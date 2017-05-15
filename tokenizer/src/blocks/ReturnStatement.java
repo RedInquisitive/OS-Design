@@ -28,7 +28,7 @@ public class ReturnStatement extends Base {
 		
 		//get zero or more expressions
 		next = Main.read.next();
-		if(Expression.verify(next)) {
+		if(Term.verify(next)) {
 			Element expression = decend(Express.EXPRESSION);
 			new Expression(expression).run(next);
 			root.appendChild(expression);
