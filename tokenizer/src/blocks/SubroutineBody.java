@@ -6,10 +6,8 @@ import org.w3c.dom.Element;
 
 import io.Reader;
 import io.Token;
-import structure.Lexical;
 import structure.Program;
 import structure.Statements;
-import symbols.Keyword;
 import symbols.Symbol;
 import tokenizer.Base;
 import tokenizer.Main;
@@ -38,14 +36,12 @@ public class SubroutineBody extends Base {
 		}
 		
 		//read statements
-		/**
 		while(true) {
 			if(!Statement.verify(next)) break;
 			Element statement = decend(Statements.STATEMENTS);
 			new Statement(statement).run(next);
 			next = Main.read.next();
 		}
-		*/
 		
 		if(next.getSymbol() != Symbol.RBRACE) 
 			throw new ParseException("Expected a closing brace to subroutine body!", Reader.getCount());
