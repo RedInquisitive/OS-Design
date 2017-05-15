@@ -7,9 +7,6 @@ import org.w3c.dom.Element;
 import io.Reader;
 import io.Token;
 import structure.Express;
-import structure.Lexical;
-import structure.Program;
-import structure.Statements;
 import symbols.Keyword;
 import symbols.Symbol;
 import tokenizer.Base;
@@ -32,9 +29,9 @@ public class ReturnStatement extends Base {
 		//get zero or more expressions
 		next = Main.read.next();
 		if(Expression.verify(next)) {
-			Element expressions = decend(Express.EXPRESSION_LIST);
+			Element expression = decend(Express.EXPRESSION);
 			new Expression(expression).run(next);
-			root.appendChild(expressions);
+			root.appendChild(expression);
 		}
 		
 		//check for semicolon

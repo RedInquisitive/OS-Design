@@ -24,23 +24,23 @@ public class ConditionalStatement extends Base {
 		
 		//Requires a while keyword
 		if(!(verifyWhile(header) || verifyIf(header)))
-			throw new ParseException("Expected a while loop!", Reader.getCount());
+			throw new ParseException("Expected a conditional!", Reader.getCount());
 		append(header);
 		
 		next = Main.read.next();
 		if(next.getSymbol() != Symbol.LPER) 
-			throw new ParseException("Expected an open perenthesis!", Reader.getCount());
+			throw new ParseException("Expected an open perenthesis in conditional!", Reader.getCount());
 		append(next);
 		
 		//get expression
 		next = Main.read.next();
-		Element expressions = decend(Express.EXPRESSION_LIST);
+		Element expression = decend(Express.EXPRESSION);
 		new Expression(expression).run(next);
-		root.appendChild(expressions);
+		root.appendChild(expression);
 		
 		next = Main.read.next();
-		if(next.getSymbol() != Symbol.LPER) 
-			throw new ParseException("Expected an open perenthesis!", Reader.getCount());
+		if(next.getSymbol() != Symbol.RPER) 
+			throw new ParseException("Expected a closed perenthesis to end conditional!", Reader.getCount());
 		append(next);
 	}
 
