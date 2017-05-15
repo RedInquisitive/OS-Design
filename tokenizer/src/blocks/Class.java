@@ -19,6 +19,9 @@ public class Class extends Base {
 		super(root);
 	}
 
+	/**
+	 * Checks for the syncax of a class.
+	 */
 	public void run(Token header) throws ParseException {
 		Token next;
 		
@@ -58,6 +61,8 @@ public class Class extends Base {
 				root.appendChild(subroutineDec);
 				continue;
 			}
+			
+			//neither
 			break;
 		}
 		

@@ -40,6 +40,7 @@ public class VarDec extends Base{
 		//Obtain the type of the variable
 		new Type(root).run(Main.read.next());
 		
+		//require internal
 		while(true) {
 			
 			//Require a variable name
@@ -67,13 +68,11 @@ public class VarDec extends Base{
 	}
 
 	public static boolean verifyClass(Token header) {
-		return 
-				header.getKeyword() == Keyword.STATIC || 
-				header.getKeyword() == Keyword.FIELD;
+		return header.getKeyword() == Keyword.STATIC || 
+			   header.getKeyword() == Keyword.FIELD;
 	}
 	
 	public static boolean verifyVar(Token header) {
-		return 
-				header.getKeyword() == Keyword.VAR;
+		return header.getKeyword() == Keyword.VAR;
 	}
 }

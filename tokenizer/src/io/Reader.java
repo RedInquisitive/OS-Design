@@ -18,6 +18,8 @@ public class Reader  {
 
 	private static int count = 0;
 	private final Scanner reader;
+	private Token last = null;
+	private boolean abort = false;
 	
 	static {
 		StringBuilder regex = new StringBuilder();
@@ -41,6 +43,10 @@ public class Reader  {
 	}
 	
 	public Token next() throws ParseException {
+		if(abort) {
+			abort = false;
+			return last;
+		}
 		count++;
 		String read = "";
 		while(read.trim().equals("")) {
@@ -68,7 +74,12 @@ public class Reader  {
 			type = Lexical.IDENTIFIER;
 			str = read;
 		}
-		return new Token(type, symbol, keyword, str, val);
+		last = new Token(type, symbol, keyword, str, val);
+		return last;
+	}
+	
+	public void abort() {
+		abort = true;
 	}
 
 	private String parseStr(String read, Scanner reader) throws ParseException {

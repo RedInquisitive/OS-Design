@@ -36,13 +36,12 @@ public class SubroutineBody extends Base {
 		}
 		
 		//read statements
-		while(true) {
-			if(!Statement.verify(next)) break;
-			Element statement = decend(Statements.STATEMENTS);
-			new Statement(statement).run(next);
-			next = Main.read.next();
-		}
-		
+		Element statements = decend(Statements.STATEMENTS);
+		new Statement(root).run(next);
+		root.appendChild(statements);
+			
+		//check right brace
+		next = Main.read.next();
 		if(next.getSymbol() != Symbol.RBRACE) 
 			throw new ParseException("Expected a closing brace to subroutine body!", Reader.getCount());
 		append(next);

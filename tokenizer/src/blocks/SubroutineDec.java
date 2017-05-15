@@ -46,55 +46,26 @@ public class SubroutineDec extends Base {
 		//Open '(' for parameter list
 		next = Main.read.next();
 		if(next.getSymbol() != Symbol.LPER)
-			throw new ParseException("Expected a perenthesis for a parameter list!", Reader.getCount());
+			throw new ParseException("Expected a parenthesis for a parameter list!", Reader.getCount());
 		append(next);
 		
-		//start parsing parameter list until ')';
+		//Get the parameter list
 		next = Main.read.next();
-		Element list = decend(Program.PARAM_LIST);
-		while(true) {
-			
-			//check for a closing ')' in case there are zero parameters
-			if(next.getSymbol() == Symbol.RPER) {
-				root.appendChild(list);
-				append(next);
-				break;
-			}
-			
-			//if not, get a type
-			new Type(list).run(next);
-			
-			//get variable name
-			next = Main.read.next();
-			if(next.getLexical() != Lexical.IDENTIFIER)
-				throw new ParseException("Expected a variable name in parameter list!", Reader.getCount());
-			append(list, next, Program.VAR_NAME);
-			
-			//read terminators
-			next = Main.read.next();
-			if(next.getSymbol() == Symbol.COMMA) {
-				
-				//Require a comma
-				append(list, next);
-				next = Main.read.next();
-				continue;
-			} else if(next.getSymbol() == Symbol.RPER) {
-				
-				//or an ending ')'
-				root.appendChild(list);
-				append(next);
-				break;
-			} else {
-				
-				//but not neither!
-				throw new ParseException("Expected a comma or a close perenthesis!", Reader.getCount());
-			}
-		}
+		Element parameters = decend(Program.PARAM_LIST);
+		new ParameterList(parameters).run(next);
+		root.appendChild(parameters);
+		
+		//if the parameter list fails, check if it is a parenthesis
+		next = Main.read.next();
+		if(next.getSymbol() != Symbol.RPER)
+			throw new ParseException("Expected a closing parenthesis for a parameter list!", Reader.getCount());
 		
 		//parse the body of the subroutine.
 		next = Main.read.next();
 		if(!SubroutineBody.verify(next)) 
 			throw new ParseException("Expected a subroutine body. They open with a '{'!", Reader.getCount());
+		
+		//create sub for body
 		Element body = decend(Program.SUBROUTINE_BODY);
 		new SubroutineBody(body).run(next);
 		root.appendChild(body);

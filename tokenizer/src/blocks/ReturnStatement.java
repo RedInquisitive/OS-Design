@@ -6,8 +6,14 @@ import org.w3c.dom.Element;
 
 import io.Reader;
 import io.Token;
+import structure.Express;
+import structure.Lexical;
+import structure.Program;
+import structure.Statements;
 import symbols.Keyword;
+import symbols.Symbol;
 import tokenizer.Base;
+import tokenizer.Main;
 
 public class ReturnStatement extends Base {
 
@@ -21,7 +27,21 @@ public class ReturnStatement extends Base {
 		//for the return statement
 		if(!verify(header))
 			throw new ParseException("Expected a return statement!", Reader.getCount());
+		append(header);
 		
+		//get zero or more expressions
+		next = Main.read.next();
+		if(Expression.verify(next)) {
+			Element expressions = decend(Express.EXPRESSION_LIST);
+			new Expression(expression).run(next);
+			root.appendChild(expressions);
+		}
+		
+		//check for semicolon
+		next = Main.read.next();
+		if(next.getSymbol() != Symbol.SEMI)
+			throw new ParseException("Expected a semi colon at end of return statement!", Reader.getCount());
+		append(next);
 		
 	}
 
