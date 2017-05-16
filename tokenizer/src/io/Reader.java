@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,18 +17,23 @@ public class Reader  {
 	
 	public static final String DELIMITER_SEPERATE = "((?<=%1$s)|(?=%1$s))";
 	public static final String DELIMITER_AFTER = "(?<=%1$s)";
+	public static final String STRING_PLACEHOLDER = "\u0002\u0003";
 	public static final String FIND;
 
 	private static int count = 0;
+	private static String line = null;
+	
 	private final Scanner reader;
 	private List<String> queue = new ArrayList<>();
+	private List<String> strings = new ArrayList<>();
 	private Token last = null;
 	private boolean abort = false;
 	
 	static {
 		StringBuilder regex = new StringBuilder();
 		for(Symbol s : Symbol.values()) regex.append("|" + String.format(DELIMITER_SEPERATE, Pattern.quote(s.xmlText() + "")));
-		FIND = "(\\s+)|(//.*)" + regex.toString();
+		FIND = "(\\s+)|(\\/\\/.*)" + regex.toString();
+		System.err.println(FIND);
 	}
 	
 	public Reader(InputStream in) {
@@ -46,7 +50,7 @@ public class Reader  {
 	
 	private void fill() throws ParseException {
 		if(!reader.hasNextLine()) throw new ParseException("No more lines!", count);
-		String line = reader.nextLine();
+		line = reader.nextLine();
 		
 		//match long comments
 		while(line.matches(".*\\/\\*\\*.*")) {
@@ -57,16 +61,18 @@ public class Reader  {
 			line += " " + reader.nextLine();
 		}
 		
-		//match strings
-		Matcher m = Pattern.compile("\\\".+?\\\"").matcher(line);
+		//match strings and replace with placeholder
+		Matcher m = Pattern.compile("\\\"(?:[^\\\"\\\\]|\\\\.)*\\\"").matcher(line);
 		while (m.find()) {
-			String old = m.group();
-			String nul = old.replaceAll("\\s", "\u0000");
-			line = line.replace(old, nul);
+			String str = m.group();
+			strings.add(str.substring(1, str.length() - 1));
+			line = line.replace(str, STRING_PLACEHOLDER);
 		}
 		
+		//match tokens
 		List<String> segments = Arrays.asList(line.split(FIND));
 		
+		//if there is nothing, restart
 		if(segments.size()  == 0) return;
 		queue.addAll(segments);
 	}
@@ -76,13 +82,13 @@ public class Reader  {
 			abort = false;
 			return last;
 		}
+		
 		count++;
 		String read = "";
-		while(read.trim().equals("")) {
+		while(read.trim().equals("") && !read.contains(STRING_PLACEHOLDER)) {
 			if(queue.size() == 0 ) fill();
 			if(queue.size() > 0) read = queue.remove(0);
 		}
-
 		
 		Lexical type;
 		Symbol symbol = Symbol.raw(read);
@@ -97,15 +103,14 @@ public class Reader  {
 		} else if(read.matches("^[0-9].*")) {
 			type = Lexical.INTEGER;
 			val = parseInt(read);
-		} else if(read.contains("\"")) {
+		} else if(read.contains(STRING_PLACEHOLDER)) {
 			type = Lexical.STRING;
-			str = read.trim();
-			str = str.substring(1, str.length() - 1);
-			str = str.replaceAll("\\x00", " ");
+			str = strings.remove(0);
 		} else {
 			type = Lexical.IDENTIFIER;
 			str = read;
 		}
+		
 		last = new Token(type, symbol, keyword, str, val);
 		return last;
 	}
@@ -125,5 +130,9 @@ public class Reader  {
 			throw new ParseException("Out of range number at \"" + read + "\"", getCount());
 		}
 		return val;
+	}
+
+	public static String getLine() {
+		return line;
 	}
 }

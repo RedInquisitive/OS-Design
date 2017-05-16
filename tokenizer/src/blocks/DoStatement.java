@@ -17,23 +17,24 @@ public class DoStatement extends Base {
 		super(root);
 	}
 
+	/**
+	 * checks the syntax of a do statement
+	 */
 	public void run(Token header) throws ParseException {
 		Token next;
 		
 		//Requires a while keyword
+		append(header);
 		if(!verify(header))
 			throw new ParseException("Expected do!", Reader.getCount());
-		append(header);
 		
 		//get subroutine call
-		next = Main.read.next();
-		new SubroutineCall(root).run(next);
+		new SubroutineCall(root).run(Main.read.next());
 		
 		//end;
-		next = Main.read.next();
+		append(next = Main.read.next());
 		if(next.getSymbol() != Symbol.SEMI) 
 			throw new ParseException("Expected a semicolon to end do!", Reader.getCount());
-		append(next);
 	}
 
 	public static boolean verify(Token header) {

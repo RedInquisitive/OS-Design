@@ -15,10 +15,14 @@ public class Op extends Base{
 		super(root);
 	}
 
+	/**
+	 * Checks for any operator code.
+	 * It's likely that you'll need to verify this first with verify.
+	 */
 	public void run(Token header) throws ParseException {
+		append(header, Express.OP);
 		if(!verify(header))
 			throw new ParseException("Expected an operator!", Reader.getCount());
-		append(header, Express.OP);
 	}
 	
 	public static boolean verify(Token header) {

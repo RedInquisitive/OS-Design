@@ -16,8 +16,8 @@ public class Statement extends Base {
 	}
 
 	/**
+	 * Checks for all statements. All of them.
 	 * Will read until an invalid keyword is found.
-	 * 
 	 * Will call abort if no token is found.
 	 */
 	public void run(Token header) throws ParseException {
@@ -26,6 +26,7 @@ public class Statement extends Base {
 			Token next = Main.read.next();
 			Element statement = null;
 			
+			//let something equal something
 			if(LetStatement.verify(next)) {
 				statement = decend(Statements.LET_STATEMENT);
 				new LetStatement(statement).run(next);
@@ -33,6 +34,7 @@ public class Statement extends Base {
 				continue;
 			}
 			
+			//if something then something, optional else
 			if(ConditionalStatement.verifyIf(next)) {
 				statement = decend(Statements.IF_STATEMENT);
 				new ConditionalStatement(statement).run(next);
@@ -40,6 +42,7 @@ public class Statement extends Base {
 				continue;
 			}
 			
+			//while something is true
 			if(ConditionalStatement.verifyWhile(next)) {
 				statement = decend(Statements.WHILE_STATEMENT);
 				new ConditionalStatement(statement).run(next);
@@ -47,6 +50,7 @@ public class Statement extends Base {
 				continue;
 			}
 			
+			//do something
 			if(DoStatement.verify(next)) {
 				statement = decend(Statements.DO_STATEMENT);
 				new DoStatement(statement).run(next);
@@ -54,6 +58,7 @@ public class Statement extends Base {
 				continue;
 			}
 			
+			//return something (or nothing, I won't judge)
 			if(ReturnStatement.verify(next)) {
 				statement = decend(Statements.RETURN_STATEMENT);
 				new ReturnStatement(statement).run(next);
@@ -61,8 +66,11 @@ public class Statement extends Base {
 				continue;
 			}
 			
+			//nothing valid
 			break;
 		}
+		
+		//abort closing }
 		Main.read.abort();
 	}
 }

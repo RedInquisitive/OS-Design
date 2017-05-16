@@ -22,9 +22,10 @@ public class SubroutineBody extends Base {
 		Token next;
 		
 		//Requires a left brace for opening a body
+		append(header);
 		if(!verify(header))
 			throw new ParseException("Expected a open brace!", Reader.getCount());
-		append(header);
+
 		
 		//Read variable headers
 		next = Main.read.next();
@@ -42,10 +43,9 @@ public class SubroutineBody extends Base {
 		root.appendChild(statements);
 			
 		//check right brace
-		next = Main.read.next();
+		append(next = Main.read.next());
 		if(next.getSymbol() != Symbol.RBRACE) 
 			throw new ParseException("Expected a closing brace to subroutine body!", Reader.getCount());
-		append(next);
 	}
 	
 	public static boolean verify(Token header) {

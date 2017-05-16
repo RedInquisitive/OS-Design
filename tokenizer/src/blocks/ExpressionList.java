@@ -25,20 +25,23 @@ public class ExpressionList extends Base {
 		Token next = header;
 
 		while(true) {
-			if(!Term.verify(next))
-				break;
 			
+			//get term. If not present, end immediately
+			if(!Term.verify(next)) break;
+			
+			//Descend into term
 			Element expression = decend(Express.EXPRESSION);
 			new Expression(expression).run(next);
 			root.appendChild(expression);
 			
-			next = Main.read.next();
-			if(next.getSymbol() != Symbol.COMMA)
-				break;
-			append(next);
+			//append comma, if present
+			append(next = Main.read.next());
+			if(next.getSymbol() != Symbol.COMMA) break;
 			
 			next = Main.read.next();
 		}
+		
+		//abort last symbol (likely a parenthesis or ; )
 		Main.read.abort();
 	}
 }

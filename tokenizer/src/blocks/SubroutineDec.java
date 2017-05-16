@@ -19,13 +19,16 @@ public class SubroutineDec extends Base {
 		super(root);
 	}
 
+	/**
+	 * parses the whole body of a subroutine.
+	 */
 	public void run(Token header) throws ParseException {
 		Token next;
 		
 		//Require either constructor, function, or method.
+		append(header);
 		if(!verify(header))
 			throw new ParseException("Expected a constructor, method, or function for a subroutine!", Reader.getCount());
-		append(header);
 		
 		//Require the keyword void, or a type.
 		next = Main.read.next();
@@ -38,17 +41,15 @@ public class SubroutineDec extends Base {
 		}
 		
 		//require a method name
-		next = Main.read.next();
+		append(next = Main.read.next(), Program.SUBROUTINE_NAME);
 		if(next.getLexical() != Lexical.IDENTIFIER)
 			throw new ParseException("A method name is required!", Reader.getCount());
-		append(next, Program.SUBROUTINE_NAME);
 		
 		//Open '(' for parameter list
-		next = Main.read.next();
+		append(next = Main.read.next());
 		if(next.getSymbol() != Symbol.LPER)
 			throw new ParseException("Expected a parenthesis for a parameter list!", Reader.getCount());
-		append(next);
-		
+
 		//Get the parameter list
 		next = Main.read.next();
 		Element parameters = decend(Program.PARAM_LIST);
@@ -56,15 +57,14 @@ public class SubroutineDec extends Base {
 		root.appendChild(parameters);
 		
 		//if the parameter list fails, check if it is a parenthesis
-		next = Main.read.next();
+		append(next = Main.read.next());
 		if(next.getSymbol() != Symbol.RPER)
 			throw new ParseException("Expected a closing parenthesis for a parameter list!", Reader.getCount());
-		append(next);
 		
 		//parse the body of the subroutine.
 		next = Main.read.next();
 		if(!SubroutineBody.verify(next)) 
-			throw new ParseException("Expected a subroutine body. They open with a '{'!", Reader.getCount());
+			throw new ParseException("Expected a subroutine body!", Reader.getCount());
 		
 		//create sub for body
 		Element body = decend(Program.SUBROUTINE_BODY);
@@ -73,8 +73,7 @@ public class SubroutineDec extends Base {
 	}
 	
 	public static boolean verify(Token header) {
-		return 
-				header.getKeyword() == Keyword.CONSTRUCTOR || 
+		return  header.getKeyword() == Keyword.CONSTRUCTOR || 
 				header.getKeyword() == Keyword.FUNCTION || 
 				header.getKeyword() == Keyword.METHOD;
 	}

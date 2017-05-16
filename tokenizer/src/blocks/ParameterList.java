@@ -28,22 +28,25 @@ public class ParameterList extends Base {
 		
 		while(true) {
 
-			if(!Type.verify(next)) 
-				break;
+			//get type in parameter list
+			//might not exist.
+			if(!Type.verify(next)) break;
 			new Type(root).run(next);
 			
-			next = Main.read.next();
+			//now get variable name
+			append(next = Main.read.next(), Program.VAR_NAME);
 			if(next.getLexical() != Lexical.IDENTIFIER)
 				throw new ParseException("Expected a variable name in parameter list!", Reader.getCount());
-			append(next, Program.VAR_NAME);
+
+			//Comma separator
+			append(next = Main.read.next());
+			if(next.getSymbol() != Symbol.COMMA) break;
 			
-			next = Main.read.next();
-			if(next.getSymbol() != Symbol.COMMA)
-				break;
-			append(next);
-			
+			//prepare for next type
 			next = Main.read.next();
 		}
+		
+		//abort close parenthesis or other symbol.
 		Main.read.abort();
 	}
 }

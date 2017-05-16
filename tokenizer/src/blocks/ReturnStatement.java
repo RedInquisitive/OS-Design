@@ -18,13 +18,17 @@ public class ReturnStatement extends Base {
 		super(root);
 	}
 
+	/**
+	 * Parse a return statement. May contain zero or one 
+	 * expressions at the end
+	 */
 	public void run(Token header) throws ParseException {
 		Token next;
 		
 		//for the return statement
+		append(header);
 		if(!verify(header))
 			throw new ParseException("Expected a return statement!", Reader.getCount());
-		append(header);
 		
 		//get zero or more expressions
 		next = Main.read.next();
@@ -36,10 +40,9 @@ public class ReturnStatement extends Base {
 		}
 		
 		//check for semicolon
+		append(next);
 		if(next.getSymbol() != Symbol.SEMI)
 			throw new ParseException("Expected a semi colon at end of return statement!", Reader.getCount());
-		append(next);
-		
 	}
 
 	public static boolean verify(Token header) {
