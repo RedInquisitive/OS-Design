@@ -59,6 +59,7 @@ public class SubroutineDec extends Base {
 		next = Main.read.next();
 		if(next.getSymbol() != Symbol.RPER)
 			throw new ParseException("Expected a closing parenthesis for a parameter list!", Reader.getCount());
+		append(next);
 		
 		//parse the body of the subroutine.
 		next = Main.read.next();

@@ -29,6 +29,7 @@ public class DoStatement extends Base {
 		next = Main.read.next();
 		new SubroutineCall(root).run(next);
 		
+		//end;
 		next = Main.read.next();
 		if(next.getSymbol() != Symbol.SEMI) 
 			throw new ParseException("Expected a semicolon to end do!", Reader.getCount());

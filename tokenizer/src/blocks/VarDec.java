@@ -27,13 +27,11 @@ public class VarDec extends Base{
 		
 		//Expect either static or field for a class variable
 		if(construct == Program.VAR_DEC) {
-			if(!verifyVar(header)) {
+			if(!verifyVar(header))
 				throw new ParseException("Expected static or field for a class variable name!", Reader.getCount());
-			}
 		} else {
-			if(!verifyClass(header)) {
+			if(!verifyClass(header))
 				throw new ParseException("Expected keyword var for a local variable name!", Reader.getCount());
-			}
 		}
 		append(header);
 		

@@ -29,13 +29,13 @@ public class Expression extends Base {
 			next = Main.read.next();
 			if(!Op.verify(next))
 				break;
-			new Op(root).run(header);
+			new Op(root).run(next);
 			
 			next = Main.read.next();
 			if(!Term.verify(next))
 				throw new ParseException("Expected a term for the expression!", Reader.getCount());
 			Element subterm = decend(Express.TERM);
-			new Term(subterm).run(header);
+			new Term(subterm).run(next);
 			root.appendChild(subterm);
 		}
 		Main.read.abort();

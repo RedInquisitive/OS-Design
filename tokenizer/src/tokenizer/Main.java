@@ -33,8 +33,9 @@ public class Main {
 			read = new Reader(System.in);
 			Token token = read.next();
 			if(Class.verify(token)) {
-				new Class(root).run(token);;
+				new Class(root).run(token);
 			}
+			
 			doc.appendChild(root);
 
 			TransformerFactory tf = TransformerFactory.newInstance();
@@ -43,7 +44,7 @@ public class Main {
 			tr.setOutputProperty(OutputKeys.METHOD, "xml");
 			tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			tr.setOutputProperty(OutputKeys.STANDALONE, "yes");
-			tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(System.out);
 			tr.transform(source, result);

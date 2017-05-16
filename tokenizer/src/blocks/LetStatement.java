@@ -36,6 +36,9 @@ public class LetStatement extends Base {
 		
 		next = Main.read.next();
 		if(next.getSymbol() == Symbol.LBRAK) {
+			append(next);
+			
+			next = Main.read.next();
 			Element expression = decend(Express.EXPRESSION);
 			new Expression(expression).run(next);
 			root.appendChild(expression);

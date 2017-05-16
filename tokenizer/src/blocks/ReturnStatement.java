@@ -32,10 +32,10 @@ public class ReturnStatement extends Base {
 			Element expression = decend(Express.EXPRESSION);
 			new Expression(expression).run(next);
 			root.appendChild(expression);
+			next = Main.read.next();
 		}
 		
 		//check for semicolon
-		next = Main.read.next();
 		if(next.getSymbol() != Symbol.SEMI)
 			throw new ParseException("Expected a semi colon at end of return statement!", Reader.getCount());
 		append(next);

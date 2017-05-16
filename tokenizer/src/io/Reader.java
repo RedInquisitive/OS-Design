@@ -24,7 +24,7 @@ public class Reader  {
 	static {
 		StringBuilder regex = new StringBuilder();
 		for(Symbol s : Symbol.values()) regex.append("|" + String.format(DELIMITER_SEPERATE, Pattern.quote(s.xmlText() + "")));
-		String find = "(\\s+)|([\\r\\n]+)" + regex.toString();
+		String find = "(\\s+)|(//.*)|([\\r\\n]+)" + regex.toString();
 		TOKEN = Pattern.compile(find);
 		STRING = Pattern.compile(String.format(DELIMITER_AFTER, Pattern.quote("\"")) + "|([\\r\\n]+)");
 	}
@@ -75,6 +75,7 @@ public class Reader  {
 			str = read;
 		}
 		last = new Token(type, symbol, keyword, str, val);
+		System.out.println(read);
 		return last;
 	}
 	

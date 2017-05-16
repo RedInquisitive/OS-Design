@@ -4,17 +4,15 @@ import java.text.ParseException;
 
 import org.w3c.dom.Element;
 
-import io.Reader;
 import io.Token;
-import structure.Lexical;
-import structure.Program;
+import structure.Express;
 import symbols.Symbol;
 import tokenizer.Base;
 import tokenizer.Main;
 
-public class ParameterList extends Base {
+public class ExpressionList extends Base {
 
-	protected ParameterList(Element root) {
+	protected ExpressionList(Element root) {
 		super(root);
 	}
 
@@ -25,17 +23,14 @@ public class ParameterList extends Base {
 	 */
 	public void run(Token header) throws ParseException {
 		Token next = header;
-		
-		while(true) {
 
-			if(!Type.verify(next)) 
+		while(true) {
+			if(!Term.verify(next))
 				break;
-			new Type(root).run(next);
 			
-			next = Main.read.next();
-			if(next.getLexical() != Lexical.IDENTIFIER)
-				throw new ParseException("Expected a variable name in parameter list!", Reader.getCount());
-			append(next, Program.VAR_NAME);
+			Element expression = decend(Express.EXPRESSION);
+			new Expression(expression).run(next);
+			root.appendChild(expression);
 			
 			next = Main.read.next();
 			if(next.getSymbol() != Symbol.COMMA)

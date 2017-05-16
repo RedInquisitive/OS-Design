@@ -32,12 +32,13 @@ public class SubroutineBody extends Base {
 			if(!VarDec.verifyVar(next)) break;
 			Element varDec = decend(Program.VAR_DEC);
 			new VarDec(varDec, Program.VAR_DEC).run(next);
+			root.appendChild(varDec);
 			next = Main.read.next();
 		}
 		
 		//read statements
 		Element statements = decend(Statements.STATEMENTS);
-		new Statement(root).run(next);
+		new Statement(statements).run(next);
 		root.appendChild(statements);
 			
 		//check right brace
