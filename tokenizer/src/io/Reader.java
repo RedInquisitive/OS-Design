@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import structure.Lexical;
@@ -46,22 +48,24 @@ public class Reader  {
 		if(!reader.hasNextLine()) throw new ParseException("No more lines!", count);
 		String line = reader.nextLine();
 		
-		while(line.matches("/\\*\\*.*")) {
-			line += " " + reader.nextLine();
-			if(line.matches("/\\*\\*.*\\*/")) {
-				line.replaceAll("/\\*\\*.*\\*/", "");
-				if(!line.matches("/\\*\\*.*")) break;
+		//match long comments
+		while(line.matches(".*\\/\\*\\*.*")) {
+			if(line.matches(".*\\/\\*\\*.*\\*\\/.*")) {
+				line = line.replaceAll("\\/\\*\\*.+?\\*\\/", "");
+				if(!line.matches(".*\\/\\*\\*.*")) break;
 			}
+			line += " " + reader.nextLine();
+		}
+		
+		//match strings
+		Matcher m = Pattern.compile("\\\".+?\\\"").matcher(line);
+		while (m.find()) {
+			String old = m.group();
+			String nul = old.replaceAll("\\s", "\u0000");
+			line = line.replace(old, nul);
 		}
 		
 		List<String> segments = Arrays.asList(line.split(FIND));
-		for(int i = 0; i < segments.size(); i++) {
-			if(segments.get(i).trim().equals("\"")) {
-				while(i <= segments.size() - 2 && !segments.get(i+1).trim().equals("\"")) {
-					segments.set(i, segments.get(i) + segments.remove(i + 1));
-				}
-			}
-		}
 		
 		if(segments.size()  == 0) return;
 		queue.addAll(segments);
@@ -95,13 +99,14 @@ public class Reader  {
 			val = parseInt(read);
 		} else if(read.contains("\"")) {
 			type = Lexical.STRING;
-			str = read;
+			str = read.trim();
+			str = str.substring(1, str.length() - 1);
+			str = str.replaceAll("\\x00", " ");
 		} else {
 			type = Lexical.IDENTIFIER;
 			str = read;
 		}
 		last = new Token(type, symbol, keyword, str, val);
-		System.out.println(read);
 		return last;
 	}
 	
