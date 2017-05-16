@@ -33,7 +33,6 @@ public class Reader  {
 		StringBuilder regex = new StringBuilder();
 		for(Symbol s : Symbol.values()) regex.append("|" + String.format(DELIMITER_SEPERATE, Pattern.quote(s.xmlText() + "")));
 		FIND = "(\\s+)|(\\/\\/.*)" + regex.toString();
-		System.err.println(FIND);
 	}
 	
 	public Reader(InputStream in) {
