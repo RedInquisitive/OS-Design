@@ -19,25 +19,25 @@ public abstract class Base {
 	
 	public static final void append(Element root, XmlName name, XmlName rename) throws ParseException {
 		Element e = root.getOwnerDocument().createElement(rename.xml());
-		e.setTextContent(name.xmlText());
+		e.setTextContent(" " + name.xmlText() + " ");
 		root.appendChild(e);
 	}
 	
 	public static final void append(Element root, XmlName name) throws ParseException {
 		Element e = root.getOwnerDocument().createElement(name.xml());
-		e.setTextContent(name.xmlText());
+		e.setTextContent(" " + name.xmlText() + " ");
 		root.appendChild(e);
 	}
 	
 	protected final void append(XmlName name, XmlName rename) throws ParseException {
 		Element e = root.getOwnerDocument().createElement(rename.xml());
-		e.setTextContent(name.xmlText());
+		e.setTextContent(" " + name.xmlText() + " ");
 		root.appendChild(e);
 	}
 	
 	protected final void append(XmlName name) throws ParseException {
 		Element e = root.getOwnerDocument().createElement(name.xml());
-		e.setTextContent(name.xmlText());
+		e.setTextContent(" " + name.xmlText() + " ");
 		root.appendChild(e);
 	}
 	

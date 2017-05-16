@@ -49,6 +49,7 @@ public class ConditionalStatement extends Base {
 		
 		next = Main.read.next();
 		if(verifyIf(header) && next.getKeyword() == Keyword.ELSE) {
+			append(next);
 			body();
 			return;
 		}

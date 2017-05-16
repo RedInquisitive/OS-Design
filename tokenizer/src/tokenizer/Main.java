@@ -25,17 +25,16 @@ public class Main {
 	
 	public static void main(String[]args) {
 		try {
+			read = new Reader(System.in);
 			DocumentBuilderFactory df = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = df.newDocumentBuilder();
 			Document doc = db.newDocument();
 			
-			Element root = doc.createElement("tokens");
-			read = new Reader(System.in);
-			Token token = read.next();
-			if(Class.verify(token)) {
-				new Class(root).run(token);
+			Element root = doc.createElement("class");
+			Token next = read.next();
+			if(Class.verify(next)) {
+				new Class(root).run(next);
 			}
-			
 			doc.appendChild(root);
 
 			TransformerFactory tf = TransformerFactory.newInstance();
