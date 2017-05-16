@@ -2,6 +2,9 @@ package io;
 
 import java.io.InputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -13,25 +16,22 @@ public class Reader  {
 	
 	public static final String DELIMITER_SEPERATE = "((?<=%1$s)|(?=%1$s))";
 	public static final String DELIMITER_AFTER = "(?<=%1$s)";
-	public static final Pattern TOKEN;
-	public static final Pattern STRING;
+	public static final String FIND;
 
 	private static int count = 0;
 	private final Scanner reader;
+	private List<String> queue = new ArrayList<>();
 	private Token last = null;
 	private boolean abort = false;
 	
 	static {
 		StringBuilder regex = new StringBuilder();
 		for(Symbol s : Symbol.values()) regex.append("|" + String.format(DELIMITER_SEPERATE, Pattern.quote(s.xmlText() + "")));
-		String find = "(\\s+)|(//.*)|([\\r\\n]+)" + regex.toString();
-		TOKEN = Pattern.compile(find);
-		STRING = Pattern.compile(String.format(DELIMITER_AFTER, Pattern.quote("\"")) + "|([\\r\\n]+)");
+		FIND = "(\\s+)|(//.*)" + regex.toString();
 	}
 	
 	public Reader(InputStream in) {
 		reader = new Scanner(in);
-		reader.useDelimiter(TOKEN);
 	}
 
 	public static int getCount() {
@@ -42,6 +42,31 @@ public class Reader  {
 		return reader.hasNext();
 	}
 	
+	private void fill() throws ParseException {
+		if(!reader.hasNextLine()) throw new ParseException("No more lines!", count);
+		String line = reader.nextLine();
+		
+		while(line.matches("/\\*\\*.*")) {
+			line += " " + reader.nextLine();
+			if(line.matches("/\\*\\*.*\\*/")) {
+				line.replaceAll("/\\*\\*.*\\*/", "");
+				if(!line.matches("/\\*\\*.*")) break;
+			}
+		}
+		
+		List<String> segments = Arrays.asList(line.split(FIND));
+		for(int i = 0; i < segments.size(); i++) {
+			if(segments.get(i).trim().equals("\"")) {
+				while(i <= segments.size() - 2 && !segments.get(i+1).trim().equals("\"")) {
+					segments.set(i, segments.get(i) + segments.remove(i + 1));
+				}
+			}
+		}
+		
+		if(segments.size()  == 0) return;
+		queue.addAll(segments);
+	}
+	
 	public Token next() throws ParseException {
 		if(abort) {
 			abort = false;
@@ -50,9 +75,10 @@ public class Reader  {
 		count++;
 		String read = "";
 		while(read.trim().equals("")) {
-			if(!reader.hasNext()) throw new ParseException("Ran out of tokens!", count);
-			read = reader.next();
+			if(queue.size() == 0 ) fill();
+			if(queue.size() > 0) read = queue.remove(0);
 		}
+
 		
 		Lexical type;
 		Symbol symbol = Symbol.raw(read);
@@ -69,7 +95,7 @@ public class Reader  {
 			val = parseInt(read);
 		} else if(read.contains("\"")) {
 			type = Lexical.STRING;
-			str = parseStr(read, reader);
+			str = read;
 		} else {
 			type = Lexical.IDENTIFIER;
 			str = read;
@@ -81,24 +107,6 @@ public class Reader  {
 	
 	public void abort() {
 		abort = true;
-	}
-
-	private String parseStr(String read, Scanner reader) throws ParseException {
-		//check if second quote is in this token
-		read = read.substring(read.indexOf("\"") + 1);
-		if(read.indexOf("\"") >= 0)
-			return read.substring(0, read.indexOf("\""));
-		
-		//if not, read until the second quote
-		count++;
-		reader.useDelimiter(STRING);
-		String next = reader.next();
-		reader.useDelimiter(TOKEN);
-		
-		//no end quote
-		if(!next.contains("\"")) throw new ParseException("End of string not found at \"" + next + "\"", getCount());
-		read += next.substring(0, next.indexOf("\""));
-		return read;
 	}
 
 	private int parseInt(String read) throws ParseException {
