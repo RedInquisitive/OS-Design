@@ -26,6 +26,7 @@ public class VarDec extends Base{
 		Token next;
 		
 		//Expect either static or field for a class variable
+		append(header);
 		if(construct == Program.VAR_DEC) {
 			if(!verifyVar(header))
 				throw new ParseException("Expected static or field for a class variable name!", Reader.getCount());
@@ -33,7 +34,7 @@ public class VarDec extends Base{
 			if(!verifyClass(header))
 				throw new ParseException("Expected keyword var for a local variable name!", Reader.getCount());
 		}
-		append(header);
+
 		
 		//Obtain the type of the variable
 		new Type(root).run(Main.read.next());
@@ -42,10 +43,10 @@ public class VarDec extends Base{
 		while(true) {
 			
 			//Require a variable name
-			next = Main.read.next();
+			append(next = Main.read.next(), Program.VAR_NAME);
 			if(next.getLexical() != Lexical.IDENTIFIER) 
 				throw new ParseException("Expected an identifier for this variable name!", Reader.getCount());
-			append(next, Program.VAR_NAME);
+
 			
 			//Require either a comma (and continue the loop)
 			next = Main.read.next();

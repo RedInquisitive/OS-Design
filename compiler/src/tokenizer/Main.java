@@ -69,6 +69,7 @@ public class Main {
 		} catch (TransformerException tfe) {
 			tfe.printStackTrace();
 		} catch(ParseException e) {
+			System.err.println("On line: " + Reader.getLine());
 			System.err.println("Error on symbol " + e.getErrorOffset() + " during parsing!");
 			e.printStackTrace();
 		}

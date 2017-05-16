@@ -26,21 +26,19 @@ public class Class extends Base {
 		Token next;
 		
 		//Classes start with the keyword "class"
+		append(header);
 		if(!verify(header))
 			throw new ParseException("Expected the word class!", Reader.getCount());
-		append(header);
 		
 		//A class requires a name
-		next = Main.read.next();
+		append(next = Main.read.next(), Program.CLASS_NAME);
 		if(next.getLexical() != Lexical.IDENTIFIER) 
 			throw new ParseException("Class name is not a valid identifier!", Reader.getCount());
-		append(next, Program.CLASS_NAME);
 		
 		//A class requires an open {
-		next = Main.read.next();
+		append(next = Main.read.next());
 		if(next.getSymbol() != Symbol.LBRACE) 
 			throw new ParseException("Class requires open brace after identifier!", Reader.getCount());
-		append(next);
 		
 		//Read any amount, including 0, of
 		while(true) {
@@ -67,9 +65,9 @@ public class Class extends Base {
 		}
 		
 		//Class closing brace
+		append(next);
 		if(next.getSymbol() != Symbol.RBRACE) 
 			throw new ParseException("Class requires closed brace after body!", Reader.getCount());
-		append(next);
 	}
 
 	public static boolean verify(Token header) {

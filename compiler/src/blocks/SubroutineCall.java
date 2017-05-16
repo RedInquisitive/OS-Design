@@ -18,23 +18,25 @@ public class SubroutineCall extends Base {
 		super(root);
 	}
 
+	/**
+	 * Call for a subroutine. Will auto parse parameters in the call.
+	 */
 	public void run(Token header) throws ParseException {
 		Token next;
 		
+		append(header);
 		if(!verify(header))
 			throw new ParseException("Expected a subroutine name or class!", Reader.getCount());
-		append(header);
-		
+
 		//check for dot access
 		next = Main.read.next();
 		if(next.getSymbol() == Symbol.DOT) {
 			append(next);
 			
 			//get real subroutine
-			next = Main.read.next();
+			append(next = Main.read.next());
 			if(next.getLexical() != Lexical.IDENTIFIER) 
 				throw new ParseException("Expected a subroutine name!", Reader.getCount());
-			append(next);
 			
 			//prepare for parenthesis
 			next = Main.read.next();
@@ -42,21 +44,19 @@ public class SubroutineCall extends Base {
 		
 		
 		//Parenthesis to start list
+		append(next);
 		if(next.getSymbol() != Symbol.LPER)
 			throw new ParseException("Expected a parenthesis to start expression list!", Reader.getCount());
-		append(next);
-		
+
 		//Get the expressions list
-		next = Main.read.next();
 		Element expressions = decend(Express.EXPRESSION_LIST);
-		new ExpressionList(expressions).run(next);
+		new ExpressionList(expressions).run(Main.read.next());
 		root.appendChild(expressions);
 		
 		//close parenthesis
-		next = Main.read.next();
+		append(next = Main.read.next());
 		if(next.getSymbol() != Symbol.RPER)
 			throw new ParseException("Expected a closing parenthesis to end expression list", Reader.getCount());
-		append(next);
 	}
 
 	public static boolean verify(Token header) {

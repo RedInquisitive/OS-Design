@@ -17,18 +17,22 @@ public class Reader  {
 	
 	public static final String DELIMITER_SEPERATE = "((?<=%1$s)|(?=%1$s))";
 	public static final String DELIMITER_AFTER = "(?<=%1$s)";
+	public static final String STRING_PLACEHOLDER = "\u0002\u0003";
 	public static final String FIND;
 
 	private static int count = 0;
+	private static String line = null;
+	
 	private final Scanner reader;
 	private List<String> queue = new ArrayList<>();
+	private List<String> strings = new ArrayList<>();
 	private Token last = null;
 	private boolean abort = false;
 	
 	static {
 		StringBuilder regex = new StringBuilder();
 		for(Symbol s : Symbol.values()) regex.append("|" + String.format(DELIMITER_SEPERATE, Pattern.quote(s.xmlText() + "")));
-		FIND = "(\\s+)|(//.*)" + regex.toString();
+		FIND = "(\\s+)" + regex.toString();
 	}
 	
 	public Reader(InputStream in) {
@@ -45,7 +49,10 @@ public class Reader  {
 	
 	private void fill() throws ParseException {
 		if(!reader.hasNextLine()) throw new ParseException("No more lines!", count);
-		String line = reader.nextLine();
+		line = reader.nextLine();
+		
+		//Match short comments
+		line = line.replaceAll("\\/\\/.*", "");
 		
 		//match long comments
 		while(line.matches(".*\\/\\*\\*.*")) {
@@ -56,12 +63,12 @@ public class Reader  {
 			line += " " + reader.nextLine();
 		}
 		
-		//match strings
-		Matcher m = Pattern.compile("\\\".+?\\\"").matcher(line);
+		//match strings and replace with placeholder
+		Matcher m = Pattern.compile("\\\"(?:[^\\\"\\\\]|\\\\.)*\\\"").matcher(line);
 		while (m.find()) {
-			String old = m.group();
-			String nul = old.replaceAll("\\s", "\u0000");
-			line = line.replace(old, nul);
+			String str = m.group();
+			strings.add(str.substring(1, str.length() - 1));
+			line = line.replace(str, STRING_PLACEHOLDER);
 		}
 		
 		//match tokens
@@ -80,7 +87,7 @@ public class Reader  {
 		
 		count++;
 		String read = "";
-		while(read.trim().equals("")) {
+		while(read.trim().equals("") && !read.contains(STRING_PLACEHOLDER)) {
 			if(queue.size() == 0 ) fill();
 			if(queue.size() > 0) read = queue.remove(0);
 		}
@@ -98,15 +105,14 @@ public class Reader  {
 		} else if(read.matches("^[0-9].*")) {
 			type = Lexical.INTEGER;
 			val = parseInt(read);
-		} else if(read.contains("\"")) {
+		} else if(read.contains(STRING_PLACEHOLDER)) {
 			type = Lexical.STRING;
-			str = read.trim();
-			str = str.substring(1, str.length() - 1);
-			str = str.replaceAll("\\x00", " ");
+			str = strings.remove(0);
 		} else {
 			type = Lexical.IDENTIFIER;
 			str = read;
 		}
+		
 		last = new Token(type, symbol, keyword, str, val);
 		return last;
 	}
@@ -126,5 +132,9 @@ public class Reader  {
 			throw new ParseException("Out of range number at \"" + read + "\"", getCount());
 		}
 		return val;
+	}
+
+	public static String getLine() {
+		return line;
 	}
 }

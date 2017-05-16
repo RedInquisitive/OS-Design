@@ -20,51 +20,57 @@ public class LetStatement extends Base {
 		super(root);
 	}
 
+	/**
+	 * Compiles a let statement. Might consist of setting a variable
+	 * or calling a function.
+	 */
 	public void run(Token header) throws ParseException {
 		Token next;
 		
 		//Requires a while keyword
+		append(header);
 		if(!verify(header))
 			throw new ParseException("Expected let!", Reader.getCount());
-		append(header);
+
 		
-		//get subroutine call
-		next = Main.read.next();
+		//get variable name
+		append(next = Main.read.next(), Program.VAR_NAME);
 		if(next.getLexical() != Lexical.IDENTIFIER)
 			throw new ParseException("Expected a variable name!", Reader.getCount());
-		append(next, Program.VAR_NAME);
 		
+		//check for array
 		next = Main.read.next();
 		if(next.getSymbol() == Symbol.LBRAK) {
 			append(next);
 			
-			next = Main.read.next();
+			//Descend into array
 			Element expression = decend(Express.EXPRESSION);
-			new Expression(expression).run(next);
+			new Expression(expression).run(next = Main.read.next());
 			root.appendChild(expression);
 			
-			next = Main.read.next();
+			//array close
+			append(next = Main.read.next());
 			if(next.getSymbol() != Symbol.RBRAK)
 				throw new ParseException("Expected a close bracket at end of let statement expression!", Reader.getCount());
-			append(next);
 			
+			//prepare for =
 			next = Main.read.next();
 		}
 		
+		// = symbol
+		append(next);
 		if(next.getSymbol() != Symbol.EQ)
 			throw new ParseException("Expected an = sign in let statement!", Reader.getCount());
-		append(next);
 		
 		//get expression
-		next = Main.read.next();
 		Element expression = decend(Express.EXPRESSION);
-		new Expression(expression).run(next);
+		new Expression(expression).run(Main.read.next());
 		root.appendChild(expression);
 		
-		next = Main.read.next();
+		//end statement
+		append(next = Main.read.next());
 		if(next.getSymbol() != Symbol.SEMI) 
 			throw new ParseException("Expected a semicolon to end let!", Reader.getCount());
-		append(next);
 	}
 
 	public static boolean verify(Token header) {
