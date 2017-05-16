@@ -32,7 +32,7 @@ public class Reader  {
 	static {
 		StringBuilder regex = new StringBuilder();
 		for(Symbol s : Symbol.values()) regex.append("|" + String.format(DELIMITER_SEPERATE, Pattern.quote(s.xmlText() + "")));
-		FIND = "(\\s+)|(\\/\\/.*)" + regex.toString();
+		FIND = "(\\s+)" + regex.toString();
 	}
 	
 	public Reader(InputStream in) {
@@ -50,6 +50,9 @@ public class Reader  {
 	private void fill() throws ParseException {
 		if(!reader.hasNextLine()) throw new ParseException("No more lines!", count);
 		line = reader.nextLine();
+		
+		//Match short comments
+		line = line.replaceAll("\\/\\/.*", "");
 		
 		//match long comments
 		while(line.matches(".*\\/\\*\\*.*")) {

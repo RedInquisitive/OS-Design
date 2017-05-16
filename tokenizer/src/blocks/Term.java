@@ -28,16 +28,20 @@ public class Term extends Base {
 		//Generic terms
 		if( header.getLexical() == Lexical.INTEGER ||
 			header.getLexical() == Lexical.STRING ||
-			header.getLexical() == Lexical.IDENTIFIER ||
 			header.getKeyword() == Keyword.TRUE ||
 			header.getKeyword() == Keyword.FALSE ||
 			header.getKeyword() == Keyword.NULL ||
 			header.getKeyword() == Keyword.THIS) {
 			append(header);
+			return;
+		}
+		
+		if(header.getLexical() == Lexical.IDENTIFIER) {
 			
 			//array
 			next = Main.read.next();
 			if(next.getSymbol() == Symbol.LBRAK) {
+				append(header);
 				append(next);
 				
 				//get expression
@@ -61,7 +65,8 @@ public class Term extends Base {
 				return;
 			}
 			
-			//reread bracket
+			//just a variable
+			append(header);
 			Main.read.abort();
 			return;
 		}

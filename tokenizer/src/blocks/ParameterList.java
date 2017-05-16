@@ -39,8 +39,9 @@ public class ParameterList extends Base {
 				throw new ParseException("Expected a variable name in parameter list!", Reader.getCount());
 
 			//Comma separator
-			append(next = Main.read.next());
+			next = Main.read.next();
 			if(next.getSymbol() != Symbol.COMMA) break;
+			append(next);
 			
 			//prepare for next type
 			next = Main.read.next();

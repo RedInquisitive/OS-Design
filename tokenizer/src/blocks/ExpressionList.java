@@ -35,8 +35,9 @@ public class ExpressionList extends Base {
 			root.appendChild(expression);
 			
 			//append comma, if present
-			append(next = Main.read.next());
+			next = Main.read.next();
 			if(next.getSymbol() != Symbol.COMMA) break;
+			append(next);
 			
 			next = Main.read.next();
 		}
