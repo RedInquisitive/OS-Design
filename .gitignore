@@ -2,3 +2,11 @@
 *.tst
 *.cmp
 /nand2tetris
+/12/SysTest
+/12/ArrayTest
+/12/KeyboardTest
+/12/MathTest
+/12/MemoryTest
+/12/OutputTest
+/12/ScreenTest
+/12/StringTest
